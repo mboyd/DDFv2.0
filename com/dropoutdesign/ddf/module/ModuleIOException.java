@@ -7,20 +7,20 @@ package com.dropoutdesign.ddf.module;
 
 public class ModuleIOException extends ModuleConnectionException {
 
-    public ModuleIOException() {
-	super();
-    }
+	public ModuleIOException() {
+		super();
+	}
 
-    public ModuleIOException(Throwable cause) {
-	super(cause);
-    }
-    
-    public ModuleIOException(String message) {
-	super(message);
-    }
-    
-    public ModuleIOException(String message, Throwable cause) {
-	super(message, cause);
-    }
-    
+	public ModuleIOException(Throwable cause) {
+		super(cause);
+	}
+	
+	public ModuleIOException(String message) {
+		super(message);
+	}
+	
+	public ModuleIOException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
 }

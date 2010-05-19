@@ -6,20 +6,20 @@ package com.dropoutdesign.ddf.module;
 
 public class ModuleConnectionException extends Exception {
 
-    public ModuleConnectionException() {
-	super();
-    }
+	public ModuleConnectionException() {
+		super();
+	}
 
-    public ModuleConnectionException(Throwable cause) {
-	super(cause);
-    }
-    
-    public ModuleConnectionException(String message) {
-	super(message);
-    }
-    
-    public ModuleConnectionException(String message, Throwable cause) {
-	super(message, cause);
-    }
-    
+	public ModuleConnectionException(Throwable cause) {
+		super(cause);
+	}
+	
+	public ModuleConnectionException(String message) {
+		super(message);
+	}
+	
+	public ModuleConnectionException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
 }

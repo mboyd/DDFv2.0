@@ -7,20 +7,19 @@ package com.dropoutdesign.ddf.module;
 
 public class UnknownConnectionTypeException extends ModuleConnectionException {
 
-    public UnknownConnectionTypeException() {
-	super();
-    }
+	public UnknownConnectionTypeException() {
+		super();
+	}
 
-    public UnknownConnectionTypeException(Throwable cause) {
-	super(cause);
-    }
-    
-    public UnknownConnectionTypeException(String message) {
-	super(message);
-    }
-    
-    public UnknownConnectionTypeException(String message, Throwable cause) {
-	super(message, cause);
-    }
-    
+	public UnknownConnectionTypeException(Throwable cause) {
+		super(cause);
+	}
+	
+	public UnknownConnectionTypeException(String message) {
+		super(message);
+	}
+	
+	public UnknownConnectionTypeException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

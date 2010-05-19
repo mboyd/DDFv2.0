@@ -6,20 +6,20 @@ package com.dropoutdesign.ddf.module;
 
 public class TimeoutException extends ModuleIOException {
 
-    public TimeoutException() {
-	super();
-    }
+	public TimeoutException() {
+		super();
+	}
 
-    public TimeoutException(Throwable cause) {
-	super(cause);
-    }
-    
-    public TimeoutException(String message) {
-	super(message);
-    }
-    
-    public TimeoutException(String message, Throwable cause) {
-	super(message, cause);
-    }
-    
+	public TimeoutException(Throwable cause) {
+		super(cause);
+	}
+	
+	public TimeoutException(String message) {
+		super(message);
+	}
+	
+	public TimeoutException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
 }

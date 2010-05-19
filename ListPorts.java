@@ -13,7 +13,7 @@ public class ListPorts {
         while (portList.hasMoreElements()) {
             portId = (CommPortIdentifier) portList.nextElement();
             if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-		System.out.println(portId.getName());
+				System.out.println(portId.getName());
             }
         }
     }

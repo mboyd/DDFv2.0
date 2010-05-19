@@ -98,9 +98,6 @@ public class WriteThread extends Thread {
 							assembleWriteCommand(writeCommandBytes, frameBytes, modules[i]);
 							try {
 								connections[i].sendCommand(writeCommandBytes);
-								debug("Write Command: " + writeCommandBytes[0] + )
-								//System.out.println(writeCommandBytes[0] + " " + 
-								//	writeCommandBytes[1]+ " " + writeCommandBytes.length);
 							} catch (ModuleIOException e) {
 								System.out.println("Error with module " + i + ". Closing connection.");
 								System.err.println(e);
@@ -137,13 +134,12 @@ public class WriteThread extends Thread {
 										break;
 							 		} else {
 										// response is in responseBytes	
-										//if (responseBytes[0] != 0) {
-											//String connectionName = connections[i].getName();
-											/*System.out.println((counter++) + " " 
-												+connections[i].getName()+" gave response: "
-							  					+Integer.toString(responseBytes[0], 16));*/
-												//System.out.print("x"+Integer.toString(responseBytes[0], 16));
-											//}
+										/* if (responseBytes[0] != 0) {
+											String connectionName = connections[i].getName();
+											System.out.println((counter++) + " " 
+												+ connections[i].getName()+" gave response: "
+							  					+ Integer.toString(responseBytes[0], 16));
+										} */
 							 		}
 								} catch (ModuleIOException e) {
 							 		modules[i].errorOccurred();
@@ -156,8 +152,8 @@ public class WriteThread extends Thread {
 						}
 					}
 			 
-					int millisToWait = (int)(lastFrameTime + ((long)frameMinMillis) 
-																- System.currentTimeMillis());
+					int millisToWait = (int)(lastFrameTime 
+										+ ((long)frameMinMillis) - System.currentTimeMillis());
 					if (millisToWait > 0) {
 						debug("Finished early, sleeping for " + millisToWati + "ms");
 						try { Thread.sleep(millisToWait); } catch (InterruptedException e) {}
