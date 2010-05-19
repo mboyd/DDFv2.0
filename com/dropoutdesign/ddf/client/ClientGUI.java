@@ -1,4 +1,4 @@
-package client.dropoutdesign.ddf;
+package com.dropoutdesign.ddf.client;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -27,18 +27,18 @@ public class ClientGUI
 	private PublishThread myPublishThread;
 
 	public static int playMode; // 1 is countinous Play
-								 // 2 is RandomPlay
-    // 3 is CountdownPlay
+								// 2 is RandomPlay
+								// 3 is CountdownPlay
 	
 	public ClientGUI()
 	{
 		setLAF();
 		playMode = 1;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createGUI();
-            }
-        });
+			public void run() {
+				createGUI();
+			}
+		});
 	}
 	
 	public void setLAF()
@@ -46,17 +46,7 @@ public class ClientGUI
 		if(UIManager.getSystemLookAndFeelClassName().equals("javax.swing.plaf.mac.MacLookAndFeel"))
 			try {
 				UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (UnsupportedLookAndFeelException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	}
@@ -77,10 +67,10 @@ public class ClientGUI
 		
 		JPanel playControls = new JPanel(new BorderLayout());
 		
-		playAnimation = new JButton();//"Play");
+		playAnimation = new JButton();		//"Play"
 			playAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/play.png")));
 			//playAnimation.setVerticalTextPosition(SwingConstants.BOTTOM);
-		    //playAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
+			//playAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
 			playAnimation.setEnabled(false);
 			playAnimation.setSize(220,220);
 			playAnimation.addActionListener(new ActionListener(){
@@ -94,10 +84,10 @@ public class ClientGUI
 			});
 			playControls.add(playAnimation, BorderLayout.CENTER);
 			
-		pauseAnimation = new JButton();//"Pause");
+		pauseAnimation = new JButton();		//"Pause"
 			pauseAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/pause.png")));
 			//pauseAnimation.setVerticalTextPosition(SwingConstants.BOTTOM);
-		    //pauseAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
+			//pauseAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
 			pauseAnimation.setEnabled(false);
 			pauseAnimation.setSize(220,220);
 			pauseAnimation.addActionListener(new ActionListener(){
@@ -112,7 +102,7 @@ public class ClientGUI
 			});
 			playControls.add(pauseAnimation, BorderLayout.WEST);
 		
-		stopAnimation = new JButton();//"Stop");
+		stopAnimation = new JButton();		//"Stop"
 			stopAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/stop.png")));
 		   // stopAnimation.setVerticalTextPosition(SwingConstants.BOTTOM);
 		   // stopAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -165,7 +155,7 @@ public class ClientGUI
 				});
 		String[] fNames = new String[animFiles.length];
 		String s;
-		for(int i = 0; i < animFiles.length; i++)
+		for (int i = 0; i < animFiles.length; i++)
 		{
 			s = animFiles[i].getName();
 			fNames[i] = s.substring(0,s.indexOf(".ddf"));
@@ -173,6 +163,7 @@ public class ClientGUI
 		return fNames;
 		
 	}
+
 	/**
 	 * 
 	 */
@@ -194,8 +185,8 @@ public class ClientGUI
 					public void actionPerformed(ActionEvent e)
 					{
 						closeConnection();
-						System.out.println("1st disconnect completed");
-						System.out.println("status: " + myFloor.isClosed());
+						System.out.println("Disconnect complete");
+						System.out.println("Status: " + myFloor.isClosed());
 					}
 			});
 				connections.add(disconnectFromFloor);
@@ -209,10 +200,10 @@ public class ClientGUI
 					{
 						if(e.getStateChange() == ItemEvent.SELECTED)
 						{
-						    playMode = 1;
+							playMode = 1;
 						}
 					}
-				    });
+					});
 				modes.add(continuousPlay);
 				
 				JRadioButtonMenuItem randomPlay = new JRadioButtonMenuItem("Random Play");
@@ -236,7 +227,7 @@ public class ClientGUI
 					{
 						if(e.getStateChange() == ItemEvent.SELECTED)
 						{
-						    playMode = 3;
+							playMode = 3;
 						}
 					}
 				});
@@ -263,9 +254,9 @@ public class ClientGUI
 		}
 		
 		  public void run() {
-		      if(myFloor == null)
-		      {
-		    	  try {
+			  if(myFloor == null)
+			  {
+				  try {
 					myFloor = new FloorWriter(hostName);
 					playAnimation.setEnabled(true);
 					pauseAnimation.setEnabled(true);
@@ -275,21 +266,21 @@ public class ClientGUI
 				} catch (UnknownHostException e) {
 					disconnected();
 					JOptionPane.showMessageDialog(null,
-						    "Could not connect to Floor",
-						    "Connection Error",
-						    JOptionPane.ERROR_MESSAGE);
+							"Could not connect to Floor",
+							"Connection Error",
+							JOptionPane.ERROR_MESSAGE);
 				} catch (IOException e) {
 					disconnected();
 					JOptionPane.showMessageDialog(null,
-						    "Could not connect to Floor",
-						    "Connection Error",
-						    JOptionPane.ERROR_MESSAGE);
+							"Could not connect to Floor",
+							"Connection Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
-		      }
-		      else{
-		    	  if(!myFloor.isClosed())
-		    		  closeConnection();
-		    	  try {
+			  }
+			  else{
+				  if(!myFloor.isClosed())
+					  closeConnection();
+				  try {
 					myFloor.connect(hostName);
 					playAnimation.setEnabled(true);
 					pauseAnimation.setEnabled(true);
@@ -299,19 +290,19 @@ public class ClientGUI
 				} catch (UnknownHostException e) {
 					disconnected();
 					JOptionPane.showMessageDialog(null,
-						    "Could not connect to Floor",
-						    "Connection Error",
-						    JOptionPane.ERROR_MESSAGE);
+							"Could not connect to Floor",
+							"Connection Error",
+							JOptionPane.ERROR_MESSAGE);
 				} catch (IOException e) {
 					disconnected();
 					JOptionPane.showMessageDialog(null,
-						    "Could not connect to Floor",
-						    "Connection Error",
-						    JOptionPane.ERROR_MESSAGE);
+							"Could not connect to Floor",
+							"Connection Error",
+							JOptionPane.ERROR_MESSAGE);
 				} 
-		      }
-		      
-		    }
+			  }
+			  
+			}
 	}
 	
 	
@@ -403,6 +394,4 @@ public class ClientGUI
 			myAnimationLoader = null;
 		}
 	}
-	
-	
 }

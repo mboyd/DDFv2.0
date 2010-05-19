@@ -4,19 +4,34 @@ import java.io.*;
 import java.net.*;
 
 public class FloorWriter {
-	
-	public static final int DEFAULT_PORT = 6001;
-	
+
+	public static final int DEFAULT_PORT = 6002;
+
 	private Socket socket;
+	
 	private OutputStream output;
 	private DataInputStream input;
+	
 	private int width;
 	private int height;
 
 	public FloorWriter(String serverAddress, int port) throws UnknownHostException, IOException {
-		InetAddress addr = InetAddress.getByName(serverAddress);
-		socket = new Socket(addr, port);
+		connect(serverAddress, port);
+	}
+	
+	public void connect(String serverAddress) throws UnknownHostException, IOException {
+		connect(serverAddress, DEFAULT_PORT);
+	}
+	
+	public void connect(String serverAddress, int port) throws UnknownHostException, IOException {
+		InetAddress addr;
+		if (serverAddress.equals("localhost")) {
+			addr = InetAddress.getByName(null);
+		} else {
+			addr = InetAddress.getByName(serverAddress);
+		}
 		
+		socket = new Socket(addr, port);
 		output = socket.getOutputStream();
 		input = new DataInputStream(socket.getInputStream());
 		
@@ -39,12 +54,14 @@ public class FloorWriter {
 		this(serverAddress, DEFAULT_PORT);
 	}
 	
-	public void waitNextFrame() throws IOException {
-		//System.err.println("FloorWriter waiting");
-		input.read();
-		//System.err.println("FloorWriter got byte");
+	public boolean isClosed() {
+		return socket.isClosed();
 	}
-	
+
+	public void waitNextFrame() throws IOException {
+		input.read();
+	}
+
 	public void sendFrame(byte pixels[]) throws IOException {
 		if (pixels.length != width*height*3) {
 			throw new IllegalArgumentException("Wrong number of frame pixels");
@@ -56,12 +73,22 @@ public class FloorWriter {
 		waitNextFrame();
 		sendFrame(pixels);
 	}
-	
+
 	public int getFloorWidth() {
 		return width;
 	}
-	
+
 	public int getFloorHeight() {
 		return	height;
+	}
+	
+	public void disconnect() {
+		try {
+			socket.shutdownOutput();
+			socket.shutdownInput();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

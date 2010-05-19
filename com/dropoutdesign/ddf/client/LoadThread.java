@@ -1,4 +1,5 @@
-package client.dropoutdesign.ddf;
+package com.dropoutdesign.ddf.client;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

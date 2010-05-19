@@ -74,6 +74,6 @@ public class Module {
 		lastFailureTime = System.currentTimeMillis();
 		System.out.println("Error occurred with module at " + address 
 			+ "\n\tcurrentConnection=" + currentConnection 
-			+ "\n\tlastFailureTime="+ lastFailureTime)˝;
+			+ "\n\tlastFailureTime="+ lastFailureTime);
 	}
 }

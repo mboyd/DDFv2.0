@@ -60,16 +60,17 @@ public class TestMain {
 		for(int a = 0; a < args.length; a++) {
 			ModuleConnection connection = ModuleConnection.open("serial:"+args[a]);
 			byte cmd[] = null;
-			//connection.executeCommand(0x60);
-			//connection.executeCommand(0xee);
+			//connection.sendCommand(0x60);
+			//connection.sendCommand(0xee);
 			long startTime = System.currentTimeMillis();
 			for(int i = 1; i <= 96; i++) {
 				cmd = moduleCmd(cmd, i);
 				connection.sendCommand(cmd);
-				byte response[] = connection.waitForResponse();
+				byte response[];
+				connection.tryReadResponse();
 			}
 			System.out.println(System.currentTimeMillis() - startTime);
-			connection.executeCommand(0x40);
+			connection.sendCommand(0x40);
 			connection.close();
 		}
 	}

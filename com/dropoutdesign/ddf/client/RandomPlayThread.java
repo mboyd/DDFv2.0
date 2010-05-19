@@ -1,4 +1,4 @@
-package client.dropoutdesign.ddf;
+package com.dropoutdesign.ddf.client;
 
 public class RandomPlayThread extends Thread
 {

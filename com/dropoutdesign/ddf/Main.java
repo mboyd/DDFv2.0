@@ -1,26 +1,29 @@
 package com.dropoutdesign.ddf;
 
-import client.dropoutdesign.ddf.ClientGUI;
-
+import com.dropoutdesign.ddf.client.ClientGUI;
 import com.dropoutdesign.ddf.config.*;
+
 import java.io.IOException;
 
 public class Main {
 	
 	public static void main(String args[]) throws IOException {
-		//ClientGUI myGUI = new ClientGUI();
-	
-		DanceFloorConfig dfc = DanceFloorConfig.readAll("config.xml");
-		DanceFloor floor = new DanceFloor(dfc);
-		WriteThread writeThread = new WriteThread(floor);
-		writeThread.start();
+		if (args.length > 0 && args[0].equals("-server")) {
 		
-		/* try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DanceFloorConfig dfc = DanceFloorConfig.readAll("config.xml");
+			DanceFloor floor = new DanceFloor(dfc);
+			WriteThread writeThread = new WriteThread(floor);
+			writeThread.start();
+		
+		} else {
+		
+			ClientGUI myGUI = new ClientGUI();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			myGUI.intialConnect();
 		}
-		myGUI.intialConnect(); */
 	}
 }

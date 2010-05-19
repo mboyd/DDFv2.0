@@ -88,7 +88,7 @@ public class WriteThread extends Thread {
 				while (!clientSocket.isInputShutdown()) {
 					for(int i = 0; i < modules.length; i++) {
 						connections[i] = modules[i].getConnection();
-						debug("Connection " + i + ": " + connectsion[i]);
+						debug("Connection " + i + ": " + connections[i]);
 					}
 				 
 					writeCommandBytes[0] = 0x10;
@@ -155,7 +155,7 @@ public class WriteThread extends Thread {
 					int millisToWait = (int)(lastFrameTime 
 										+ ((long)frameMinMillis) - System.currentTimeMillis());
 					if (millisToWait > 0) {
-						debug("Finished early, sleeping for " + millisToWati + "ms");
+						debug("Finished early, sleeping for " + millisToWait + "ms");
 						try { Thread.sleep(millisToWait); } catch (InterruptedException e) {}
 					}
 					lastFrameTime = System.currentTimeMillis();
