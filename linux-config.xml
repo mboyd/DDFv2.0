@@ -1,0 +1,41 @@
+<dancefloor>
+  <maxfps>32</maxfps>
+  <modules>
+    <module>
+      <address>serial:/dev/ttyUSB0</address>
+      <layout>0-15,0 0-15,1 0-15,2 0-15,3</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB1</address>
+      <layout>0-15,4 0-15,5 0-15,6 0-15,7</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB2</address>
+      <layout>0-15,8 0-15,9 0-15,10 0-15,11</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB3</address>
+      <layout>0-15,12 0-15,13 0-15,14 0-15,15</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB4</address>
+      <layout>0-15,16 0-15,17 0-15,18 0-15,19</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB5</address>
+      <layout>0-15,20 0-15,21 0-15,22 0-15,23</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB6</address>
+      <layout>0-15,24 0-15,25 0-15,26 0-15,27</layout>
+    </module>
+    <module>
+      <address>serial:/dev/ttyUSB7</address>
+      <layout>0-15,28 0-15,29 0-15,30 0-15,31</layout>
+    </module>
+  </modules>
+  <ipwhitelist>
+    <string>127.0.0.1</string>
+    <string>18.238.2.229</string>
+  </ipwhitelist>
+</dancefloor>
