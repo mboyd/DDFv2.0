@@ -1,3 +1,5 @@
+package com.dropoutdesign.ddf.test;
+
 import java.io.*;
 import java.util.*;
 import gnu.io.*;

@@ -1,31 +1,34 @@
-package com.dropoutdesign.ddf.client;
+package com.dropoutdesign.ddf.test;
+
+import com.dropoutdesign.ddf.client.FloorWriter;
 
 import java.net.*;
 import java.io.*;
 
-public class TestConnect
-{
-	public static void main(String[] args)
-	{
+public class TestConnect {
+
+	public static void main(String[] args) {
 			try {
 				FloorWriter myFloor = new FloorWriter("dancefloor.mit.edu");
 				System.out.println("Connected");
-				try{
-					Thread.sleep(2000);
-				}catch(Exception e) {}
+				
+				try{ Thread.sleep(2000); } catch (Exception e) {}
+				
 				loadDDF(myFloor, "inter4.ddf");
+			
 			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Unable to reach dancefloor.mit.edu");
+				System.exit(1);
+			
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Unable to connect to server on dancefloor.mit.edu");
+				System.exit(1);
 			}
 		
 	}
-	public static int loadDDF(FloorWriter myFloor, String fileName)
-	{
-	  int numframes=0,k;
+
+	public static int loadDDF(FloorWriter myFloor, String fileName) {
+	  int numframes = 0, k;
 	  int ROWS = myFloor.getFloorWidth();
 	  int COLS = myFloor.getFloorHeight();
 	  System.out.println("Rows: " + myFloor.getFloorWidth());
@@ -36,10 +39,9 @@ public class TestConnect
 	  try {
 		FileInputStream ddfFile = new FileInputStream(fileName);
 		  int status = 1;
-		  while(status != -1 && numframes<1000)
-		  {
+		  while(status != -1 && numframes < 1000) {
 			 // System.out.println(numframes);
-			  status = ddfFile.read(data[numframes],0,ROWS*COLS*3);
+			  status = ddfFile.read(data[numframes], 0, ROWS*COLS*3);
 			  numframes++;
 		  }
 		  numframes--;
@@ -49,11 +51,12 @@ public class TestConnect
 		  
 		  ddfFile.close();
 	} catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		System.out.println("Unable to locate pattern: " + fileName);
+		System.exit(1);
+
 	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		System.out.println("Unable to load pattern: " + fileName);
+		System.exit(1);
 	}
 
 		try {

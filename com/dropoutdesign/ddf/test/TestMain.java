@@ -1,4 +1,4 @@
-package com.dropoutdesign.ddf;
+package com.dropoutdesign.ddf.test;
 
 import com.dropoutdesign.ddf.module.*;
 import java.util.*;

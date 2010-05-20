@@ -7,12 +7,13 @@
 	
 	<target name="compile">
 		<javac srcdir="com" classpathref="classpath"/>
-		<jar destfile="../DDFv2.0.jar" basedir="." manifest="MANIFEST.MF"/>
+		<jar destfile="DDFv2.0.jar" basedir="." includes="com/** lib/**" manifest="manifest.mf"/>
+		<antcall target="clean"/>
 	</target>
 	
 	<target name="clean">
 		<delete>
-			<fileset dir="." includes="**/*.class"/>
+			<fileset dir="com" includes="**/*.class"/>
 		</delete>
 	</target>
 

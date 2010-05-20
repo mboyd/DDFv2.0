@@ -24,14 +24,8 @@ public class FloorWriter {
 	}
 	
 	public void connect(String serverAddress, int port) throws UnknownHostException, IOException {
-		InetAddress addr;
-		if (serverAddress.equals("localhost")) {
-			addr = InetAddress.getByName(null);
-		} else {
-			addr = InetAddress.getByName(serverAddress);
-		}
-		
-		socket = new Socket(addr, port);
+		socket = new Socket();
+		socket.connect(new InetSocketAddress(serverAddress, port), 2000);
 		output = socket.getOutputStream();
 		input = new DataInputStream(socket.getInputStream());
 		

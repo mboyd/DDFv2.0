@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
 Main-Class: com.dropoutdesign.ddf.Main
-Class-Path: xstream-1.1.3.jar RXTXcomm.jar 
+Class-Path: lib/xstream-1.1.3.jar lib/RXTXcomm.jar 

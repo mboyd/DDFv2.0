@@ -1,5 +1,7 @@
+package com.dropoutdesign.ddf.test;
 
 import com.dropoutdesign.ddf.client.FloorWriter;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.awt.*;

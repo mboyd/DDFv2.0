@@ -7,8 +7,7 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.net.*;
 
-public class ClientGUI
-{
+public class ClientGUI {
 	private FloorWriter myFloor;
 	private Player myPlayer;
 	
@@ -30,8 +29,7 @@ public class ClientGUI
 								// 2 is RandomPlay
 								// 3 is CountdownPlay
 	
-	public ClientGUI()
-	{
+	public ClientGUI() {
 		setLAF();
 		playMode = 1;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -41,18 +39,16 @@ public class ClientGUI
 		});
 	}
 	
-	public void setLAF()
-	{
-		if(UIManager.getSystemLookAndFeelClassName().equals("javax.swing.plaf.mac.MacLookAndFeel"))
-			try {
-				UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	public void setLAF() {
+		String lafClass = UIManager.getSystemLookAndFeelClassName();
+		try {
+			UIManager.setLookAndFeel(lafClass);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	private void createGUI()
-	{
+	private void createGUI() {
 		
 		myPlayer = new Player();
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -67,329 +63,270 @@ public class ClientGUI
 		
 		JPanel playControls = new JPanel(new BorderLayout());
 		
-		playAnimation = new JButton();		//"Play"
-			playAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/play.png")));
-			//playAnimation.setVerticalTextPosition(SwingConstants.BOTTOM);
-			//playAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
-			playAnimation.setEnabled(false);
-			playAnimation.setSize(220,220);
-			playAnimation.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{	if(myFloor.isClosed())
-						closeConnection();
-					else if(myList.getSelectedValue() != null)
-						myPlayer.playAnimation(myList.getSelectedValue().toString());
-						
-				}
-			});
-			playControls.add(playAnimation, BorderLayout.CENTER);
+		playAnimation = new JButton();
+		playAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/play.png")));
+		playAnimation.setEnabled(false);
+		playAnimation.setSize(220,220);
+		playAnimation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (myFloor.isClosed())
+					closeConnection();
+				else if(myList.getSelectedValue() != null)
+					myPlayer.playAnimation(myList.getSelectedValue().toString());
+					
+			}
+		});
+		playControls.add(playAnimation, BorderLayout.CENTER);
 			
-		pauseAnimation = new JButton();		//"Pause"
-			pauseAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/pause.png")));
-			//pauseAnimation.setVerticalTextPosition(SwingConstants.BOTTOM);
-			//pauseAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
-			pauseAnimation.setEnabled(false);
-			pauseAnimation.setSize(220,220);
-			pauseAnimation.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					if(myFloor.isClosed())
-						closeConnection();
-					else if(myList.getSelectedValue() != null)
-						myPlayer.pauseAnimation();
-						
-				}
-			});
-			playControls.add(pauseAnimation, BorderLayout.WEST);
+		pauseAnimation = new JButton();
+		pauseAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/pause.png")));
+		pauseAnimation.setEnabled(false);
+		pauseAnimation.setSize(220,220);
+		pauseAnimation.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if(myFloor.isClosed())
+					closeConnection();
+				else if(myList.getSelectedValue() != null)
+					myPlayer.pauseAnimation();
+					
+			}
+		});
+		playControls.add(pauseAnimation, BorderLayout.WEST);
 		
-		stopAnimation = new JButton();		//"Stop"
-			stopAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/stop.png")));
-		   // stopAnimation.setVerticalTextPosition(SwingConstants.BOTTOM);
-		   // stopAnimation.setHorizontalTextPosition(SwingConstants.CENTER);
-			stopAnimation.setEnabled(false);
-			stopAnimation.setSize(220,220);
-			stopAnimation.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					if(myFloor.isClosed())
-						closeConnection();
-					else if(myList.getSelectedValue() != null)
-						myPlayer.stopAnimation();
-						
-				}
-			});
-			playControls.add(stopAnimation, BorderLayout.EAST);
+		stopAnimation = new JButton();
+		stopAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/stop.png")));
+		stopAnimation.setEnabled(false);
+		stopAnimation.setSize(220,220);
+		stopAnimation.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if (myFloor.isClosed())
+					closeConnection();
+				else if(myList.getSelectedValue() != null)
+					myPlayer.stopAnimation();	
+			}
+		});
+		playControls.add(stopAnimation, BorderLayout.EAST);
 		
 		myPanel.add(playControls, BorderLayout.CENTER);
 		myFrame.setContentPane(myPanel);
 		myFrame.setBounds(0,0,1024,300);
 		myFrame.setVisible(true);
 		
+		disconnected();
+		
 	}
 
-	public void intialConnect()
-	{
-		ConnectorThread danceFloorConnector = new ConnectorThread("ConnectorThread", "dancefloor.mit.edu");
+	public void intialConnect() {
+		ConnectorThread danceFloorConnector = 
+				new ConnectorThread("ConnectorThread", "dancefloor.mit.edu");
 		danceFloorConnector.start();
 	}
 	
-	private JScrollPane createAnimationList()
-	{
+	private JScrollPane createAnimationList() {
 		myList = new JList(getFileNames());
 		myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(myList);
 		return scrollPane;
 	}
 	
-
-	
-	private String[] getFileNames()
-	{
+	private String[] getFileNames() {
 		File curDir = new File(".");
-		File[] animFiles = curDir.listFiles(new FileFilter()
-				{
-			public boolean accept(File f)
-			{
+		File[] animFiles = curDir.listFiles(new FileFilter() {
+			public boolean accept(File f) {
 				return f.getName().contains(".ddf");
 			}
-				});
+		});
+		
 		String[] fNames = new String[animFiles.length];
 		String s;
-		for (int i = 0; i < animFiles.length; i++)
-		{
+		for (int i = 0; i < animFiles.length; i++) {
 			s = animFiles[i].getName();
 			fNames[i] = s.substring(0,s.indexOf(".ddf"));
 		}
 		return fNames;
-		
 	}
 
-	/**
-	 * 
-	 */
 	private JMenuBar createMenuBar() {
 		JMenuBar myMenuBar = new JMenuBar();
-			JMenu connections = new JMenu("Connections");
-				connectToFloor = new JMenuItem("Connect...");
-				connectToFloor.addActionListener(new ActionListener(){
-						public void actionPerformed(ActionEvent e)
-						{
+		JMenu connections = new JMenu("Connections");
+		connectToFloor = new JMenuItem("Connect...");
+		connectToFloor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 							createConnectionDialog();
-						}
-				});
-				disconnected();
-				connections.add(connectToFloor);
-				
-				JMenuItem disconnectFromFloor = new JMenuItem("Disconnect");
-				disconnectFromFloor.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e)
-					{
-						closeConnection();
-						System.out.println("Disconnect complete");
-						System.out.println("Status: " + myFloor.isClosed());
-					}
-			});
-				connections.add(disconnectFromFloor);
-			
-			myMenuBar.add(connections);
-			
-			modes = new JMenu("Mode");
-				JRadioButtonMenuItem continuousPlay = new JRadioButtonMenuItem("Countinous Play", true);
-				continuousPlay.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e)
-					{
-						if(e.getStateChange() == ItemEvent.SELECTED)
-						{
-							playMode = 1;
-						}
-					}
-					});
-				modes.add(continuousPlay);
-				
-				JRadioButtonMenuItem randomPlay = new JRadioButtonMenuItem("Random Play");
-				randomPlay.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e)
-					{
-						if(e.getStateChange() == ItemEvent.SELECTED)
-						{
-							playMode = 2;
-							String time = JOptionPane.showInputDialog("How long between animation switches (seconds)", "180");
-							RandomPlayThread myRanThread = new RandomPlayThread("RandomPlayThread", Integer.parseInt(time), myPlayer, getFileNames());
-							myRanThread.start();
-						}
-					}
-				});
-				modes.add(randomPlay);
+			}
+		});
+		
+		connections.add(connectToFloor);
+		
+		JMenuItem disconnectFromFloor = new JMenuItem("Disconnect");
+		disconnectFromFloor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				closeConnection();
+			}
+		});
+		
+		connections.add(disconnectFromFloor);
+		
+		myMenuBar.add(connections);
+		
+		modes = new JMenu("Mode");
+		JRadioButtonMenuItem continuousPlay = new JRadioButtonMenuItem("Countinous Play", true);
+		continuousPlay.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					playMode = 1;
+				}
+			}
+		});
+		
+		modes.add(continuousPlay);
+		
+		JRadioButtonMenuItem randomPlay = new JRadioButtonMenuItem("Random Play");
+		randomPlay.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					playMode = 2;
+					String time = JOptionPane.showInputDialog("How long between animation" 
+							+ " switches (seconds)", "180");
+					
+					RandomPlayThread myRanThread = new RandomPlayThread("RandomPlayThread",
+					 					Integer.parseInt(time), myPlayer, getFileNames());
+					myRanThread.start();
+				}
+			}
+		});
+		
+		modes.add(randomPlay);
 
-				JRadioButtonMenuItem countdownPlay = new JRadioButtonMenuItem("Countdown Play");
-				countdownPlay.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e)
-					{
-						if(e.getStateChange() == ItemEvent.SELECTED)
-						{
-							playMode = 3;
-						}
-					}
-				});
-				modes.add(countdownPlay);
+		JRadioButtonMenuItem countdownPlay = new JRadioButtonMenuItem("Countdown Play");
+		countdownPlay.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					playMode = 3;
+				}
+			}
+		});
+		modes.add(countdownPlay);
 
-				/* NB: This is here to ensure that only one button is checked at a time */
-				ButtonGroup playModes = new ButtonGroup();
-				playModes.add(continuousPlay);
-				playModes.add(randomPlay);
-				playModes.add(countdownPlay);
+		/* NB: This is here to ensure that only one button is checked at a time */
+		ButtonGroup playModes = new ButtonGroup();
+		playModes.add(continuousPlay);
+		playModes.add(randomPlay);
+		playModes.add(countdownPlay);
 
-				modes.setEnabled(false);
-			myMenuBar.add(modes);
+		modes.setEnabled(false);
+		myMenuBar.add(modes);
 		return myMenuBar;
 	}
 
-	class ConnectorThread extends Thread
-	{
+	class ConnectorThread extends Thread {
 		public String hostName;
-		public ConnectorThread(String str, String hName)
-		{
+		
+		public ConnectorThread(String str, String hName) {
 			super(str);
 			hostName = hName;
 		}
 		
-		  public void run() {
-			  if(myFloor == null)
-			  {
-				  try {
-					myFloor = new FloorWriter(hostName);
-					playAnimation.setEnabled(true);
-					pauseAnimation.setEnabled(true);
-					stopAnimation.setEnabled(true);
-					modes.setEnabled(true);
-					connected();
-				} catch (UnknownHostException e) {
-					disconnected();
-					JOptionPane.showMessageDialog(null,
-							"Could not connect to Floor",
-							"Connection Error",
-							JOptionPane.ERROR_MESSAGE);
-				} catch (IOException e) {
-					disconnected();
-					JOptionPane.showMessageDialog(null,
-							"Could not connect to Floor",
-							"Connection Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			  }
-			  else{
-				  if(!myFloor.isClosed())
-					  closeConnection();
-				  try {
-					myFloor.connect(hostName);
-					playAnimation.setEnabled(true);
-					pauseAnimation.setEnabled(true);
-					stopAnimation.setEnabled(true);
-					modes.setEnabled(true);
-					connected();
-				} catch (UnknownHostException e) {
-					disconnected();
-					JOptionPane.showMessageDialog(null,
-							"Could not connect to Floor",
-							"Connection Error",
-							JOptionPane.ERROR_MESSAGE);
-				} catch (IOException e) {
-					disconnected();
-					JOptionPane.showMessageDialog(null,
-							"Could not connect to Floor",
-							"Connection Error",
-							JOptionPane.ERROR_MESSAGE);
-				} 
-			  }
-			  
+		public void run() {
+			if (myFloor != null && !myFloor.isClosed()) {
+				closeConnection();
 			}
+			
+			try {
+				myFloor = new FloorWriter(hostName);
+				connected();
+			
+			} catch (UnknownHostException e) {
+				disconnected();
+				JOptionPane.showMessageDialog(null,
+						"Could not connect to floor: host unreachable.",
+						"Connection Error",
+						JOptionPane.ERROR_MESSAGE);
+			
+			} catch (IOException e) {
+				disconnected();
+				JOptionPane.showMessageDialog(null,
+						"Could not connect to floor: host reachable, but no response.",
+						"Connection Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	
-	private void createConnectionDialog()
-	{
-		String hostName = JOptionPane.showInputDialog("Input Server Hostname", "dancefloor.mit.edu");
+	private void createConnectionDialog() {
+		String hostName = JOptionPane.showInputDialog("Input Server Hostname",
+														"dancefloor.mit.edu");
 		
 		ConnectorThread danceFloorConnector = new ConnectorThread("ConnectorThread", hostName);
 		danceFloorConnector.start();
 	}
 	
-	
-	private void connected()
-	{
+	private void connected() {
 		connectToFloor.setIcon(new ImageIcon(ClientGUI.class.getResource("images/conn.gif")));
-		//connectToFloor.setIcon(new ImageIcon("images/conn.gif"));
+		playAnimation.setEnabled(true);
+		pauseAnimation.setEnabled(true);
+		stopAnimation.setEnabled(true);
+		modes.setEnabled(true);
 	}
-	private void disconnected()
-	{
+	
+	private void disconnected() {
 		connectToFloor.setIcon(new ImageIcon(ClientGUI.class.getResource("images/disc.gif")));
-		//connectToFloor.setIcon(new ImageIcon("images/disc.gif"));
-	}
-	private void closeConnection()
-	{
-		if(myPublishThread != null)
-		{
-			myPublishThread.setStop(true);
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			myPublishThread = null;
-			myAnimationLoader = null;
-		}
-		if(myFloor != null)
-			myFloor.disconnect();
 		playAnimation.setEnabled(false);
 		pauseAnimation.setEnabled(false);
 		stopAnimation.setEnabled(false);
 		modes.setEnabled(false);
+	}
+	
+	private void closeConnection() {
+		if (myPublishThread != null) {
+			myPublishThread.setStop(true);
+			
+			try { Thread.sleep(500); } catch (InterruptedException e) {}
+			
+			myPublishThread = null;
+			myAnimationLoader = null;
+		}
+		if (myFloor != null)
+			myFloor.disconnect();
+	
 		disconnected();
 	}
 	
 	class Player implements Playable{
 		private boolean isPaused = false;
-		public void playAnimation(String s)
-		{
-			if(myAnimationLoader == null)
-			{
+		
+		public void playAnimation(String s) {
+			if(myAnimationLoader == null) {
 				myPublishThread = new PublishThread("PublishThread", myFloor);
 				myAnimationLoader = new LoadThread("LoadThread", s, myPublishThread, myFloor);
 				myAnimationLoader.start();
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
+				try { Thread.sleep(2000); } catch (InterruptedException e) {}
+				
 				myPublishThread.start();
-			}
-			else if(!isPaused){
+			
+			} else if (!isPaused){
 				myAnimationLoader = new LoadThread("LoadThread", s, myPublishThread, myFloor);
 				myAnimationLoader.start();
-			}
-			else
-			{
+			
+			} else {
 				myPublishThread.setPause(false);
 				isPaused = false;
 			}
 		}
 		
-		public void pauseAnimation()
-		{
-			if(!isPaused){
-			myPublishThread.setPause(true);
-			isPaused = true;
-			}
-			else
-			{
+		public void pauseAnimation() {
+			if (!isPaused) {
+				myPublishThread.setPause(true);
+				isPaused = true;
+			} else {
 				myPublishThread.setPause(false);
 				isPaused = false;
 			}
 		}
-		public void stopAnimation()
-		{
+		
+		public void stopAnimation() {
 			myPublishThread.setStop(true);
 			myAnimationLoader = null;
 		}
