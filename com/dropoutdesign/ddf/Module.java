@@ -1,6 +1,6 @@
 package com.dropoutdesign.ddf;
 
-import com.dropoutdesign.ddf.config.XYCoords;
+import com.dropoutdesign.ddf.config.*;
 import com.dropoutdesign.ddf.module.*;
 import java.util.*;
 
@@ -14,9 +14,9 @@ public class Module {
 	private long lastFailureTime = 0;
 	private boolean badAddress = false;
 	
-	public Module(String connectAddress, XYCoords[] pixelLayout) {
-		address = connectAddress;
-		layout = Arrays.asList((XYCoords[])pixelLayout.clone());
+	public Module(ModuleConfig config) {
+		address = config.address;
+		layout = Arrays.asList(config.getLEDCoords().clone());
 	}
 	
 	public List getPixelCoords() {

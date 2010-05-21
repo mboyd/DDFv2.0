@@ -6,18 +6,17 @@ import com.dropoutdesign.ddf.config.*;
 public class DanceFloor {
 	
 	private int maxFPS;
-	private List/*Module*/ modules;
-	private List/*InetAddress*/ ipWhitelist;
+	private List<Module> modules;
+	private List<InetAddress> ipWhitelist;
 	private int pixelWidth;
 	private int pixelHeight;
 	
 	public DanceFloor(DanceFloorConfig config) {
 		maxFPS = config.maxfps;
 		ipWhitelist = config.getWhitelistAddresses();
-		modules = new ArrayList();
-		for (Iterator iter = config.modules.iterator(); iter.hasNext(); ) {
-			ModuleConfig mc = (ModuleConfig)iter.next();
-			modules.add(new Module(mc.address, mc.getLEDCoords()));
+		modules = new ArrayList(config.modules.size());
+		for (ModuleConfig mc : config.modules) {
+			modules.add(new Module(mc));
 		}
 		updateDimensions();
 		//System.out.println(pixelWidth+" x "+pixelHeight);

@@ -1,6 +1,5 @@
 package com.dropoutdesign.ddf.config;
 
-
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -66,7 +65,7 @@ public class DanceFloorConfig {
 		try {
 			return (DanceFloorConfig)xstream.fromXML(r);
 		} catch (StreamException e) {
-			throw new IllegalArgumentException("Malformed XML: "+e.getMessage());
+			throw new IllegalArgumentException("Malformed XML: "+ e.getMessage());
 		}
 	}
 

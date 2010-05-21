@@ -107,7 +107,7 @@ public abstract class ModuleConnection {
 	public byte firmwareVersion() throws ModuleIOException {
 		sendCommand(0x70);
 		readResponsePrivate();
-		if (responseBytes[0] != 0) { // for old firwmare
+		if (responseBytes[0] != 0) { // for old firmware
 			return responseBytes[0];
 		}
 		else {
@@ -115,11 +115,10 @@ public abstract class ModuleConnection {
 		}
 	}
 
-
 	public int checkI2C() throws ModuleIOException {
 		sendCommand(0x61);
 		readResponsePrivate();
-		if (responseBytes[0] != 0) { // for old firwmare
+		if (responseBytes[0] != 0) { // for old firmware
 			return -1;
 		}
 		else {

@@ -193,7 +193,7 @@ public class WriteThread extends Thread {
 	private void assembleWriteCommand(byte dest[], byte frameBytes[], Module m) {
 		List coords = m.getPixelCoords();
 		int curNib = 2;
-		//boolean debug = (m.getAddress().indexOf("B111") >= 0);
+
 		for (int q = 0; q < 4; q++) {
 			 for (int c = 0; c < 3; c++) {
 				for (int led = q*16; led < (q+1)*16; led++) {
@@ -206,25 +206,13 @@ public class WriteThread extends Thread {
 					
 					if ((curNib % 2) == 0) {
 						dest[curByte] = (byte)(nib);
-						//if (debug) System.out.println("dest["+curByte+"] = (byte)("+nib+"<<4);");
 					} else {
-						dest[curByte] |= (byte)(nib<<4);
-						//if (debug) System.out.println("dest["+curByte+"] |= (byte)("+nib+");");
+						dest[curByte] |= (byte)(nib << 4);
 					}
 				curNib++;
 				}
 			}
 		}
-		/*if (debug) {
-			System.out.println();
-		}*/
-		/*if (m.getAddress().indexOf("B111") >= 0) {
-			for(int i = 0; i < dest.length; i++) {
-				System.out.print(Integer.toString(((int)dest[i])&0xFF, 16));
-				System.out.print(" ");
-		 	}
-			System.out.println();
-		 }*/
 	}
 	
 	private void debug(String str) {
