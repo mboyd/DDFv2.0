@@ -113,10 +113,10 @@ public class ClientGUI {
 		myFrame.setVisible(true);
 		
 		disconnected();
-		
+		initialConnect();
 	}
 
-	public void intialConnect() {
+	public void initialConnect() {
 		ConnectorThread danceFloorConnector = 
 				new ConnectorThread("ConnectorThread", "dancefloor.mit.edu");
 		danceFloorConnector.start();
@@ -239,14 +239,16 @@ public class ClientGUI {
 			} catch (UnknownHostException e) {
 				disconnected();
 				JOptionPane.showMessageDialog(null,
-						"Could not connect to floor: host unreachable.",
+						"Could not connect to floor on " + hostName 
+							+ ": host unreachable.",
 						"Connection Error",
 						JOptionPane.ERROR_MESSAGE);
 			
 			} catch (IOException e) {
 				disconnected();
 				JOptionPane.showMessageDialog(null,
-						"Could not connect to floor: host reachable, but no response.",
+						"Could not connect to floor on " + hostName 
+							+ ": host reachable, but no response.",
 						"Connection Error",
 						JOptionPane.ERROR_MESSAGE);
 			}

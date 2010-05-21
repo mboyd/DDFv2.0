@@ -2,19 +2,19 @@
 	<maxfps>32</maxfps>
 	<modules>
 		<module>
-			<address>serial:/dev/cu.usbserial-000011FD</address>
+			<address>serial:/dev/usbdev1.1_ep00</address>
 			<layout>0-15,0 0-15,1 0-15,2 0-15,3</layout>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-000012FD</address>
+			<address>serial:/dev/usbdev1.1_ep81</address>
 			<layout>0-15,4 0-15,5 0-15,6 0-15,7</layout>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-000013FD</address>
+			<address>serial:/dev/usbdev1.2_ep00</address>
 			<layout>0-15,8 0-15,9 0-15,10 0-15,11</layout>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-000014FD</address>
+			<address>serial:/dev/usbdev1.2_ep81</address>
 			<layout>0-15,12 0-15,13 0-15,14 0-15,15</layout>
 		</module>
 

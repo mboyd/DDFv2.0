@@ -17,13 +17,7 @@ public class Main {
 		
 		} else {
 		
-			ClientGUI myGUI = new ClientGUI();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			myGUI.intialConnect();
+			ClientGUI myGUI = new ClientGUI();	
 		}
 	}
 }
