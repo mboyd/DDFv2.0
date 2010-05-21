@@ -1,6 +1,6 @@
 package com.dropoutdesign.ddf.test;
 
-import com.dropoutdesign.ddf.client.FloorWriter;
+import com.dropoutdesign.ddf.*;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.List;
 
 public class TestClient {
-    
+/*    
     public static void main(String args[]) throws IOException, UnknownHostException, AWTException {
 	String serverHost;
 	if (args.length < 1) {
@@ -34,7 +34,7 @@ public class TestClient {
 		}
 	    }
 	    writer.waitAndSend(pixels);
-	    }*/
+	    }
 	Robot robot = new Robot(); // throws AWTException if can't use robot
 	byte[] pixelBytes = new byte[width*height*3];
 	//System.exit(0);
@@ -64,11 +64,11 @@ public class TestClient {
 		  if (frameTimes.size() >= 50) {
 		  System.out.println(frameTimes);
 		  frameTimes.clear();
-		  }*/
+		  }
 		
 		writer.waitAndSend(pixelBytes);	    
 	    }
 	}
     }
-    
+ */   
 }

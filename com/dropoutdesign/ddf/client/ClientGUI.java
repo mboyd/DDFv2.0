@@ -1,5 +1,7 @@
 package com.dropoutdesign.ddf.client;
 
+import com.dropoutdesign.ddf.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -8,7 +10,7 @@ import java.net.UnknownHostException;
 import java.net.*;
 
 public class ClientGUI {
-	private FloorWriter myFloor;
+	private RemoteFloor myFloor;
 	private Player myPlayer;
 	
 	private JFrame myFrame;
@@ -29,29 +31,26 @@ public class ClientGUI {
 								// 2 is RandomPlay
 								// 3 is CountdownPlay
 	
-	public ClientGUI() {
-		setLAF();
+	public ClientGUI(String defaultHost) {
+		final String host = defaultHost;
 		playMode = 1;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createGUI();
+				if (host != null)
+					connect(host);
 			}
 		});
 	}
-	
-	public void setLAF() {
-		String lafClass = UIManager.getSystemLookAndFeelClassName();
-		try {
-			UIManager.setLookAndFeel(lafClass);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 	
 	private void createGUI() {
 		
 		myPlayer = new Player();
+		
 		JFrame.setDefaultLookAndFeelDecorated(true);
+		String lafClass = UIManager.getSystemLookAndFeelClassName();
+		try { UIManager.setLookAndFeel(lafClass); } catch (Exception e) {}
 		
 		myFrame = new JFrame("Disco Dance Floor Client");
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,8 +68,8 @@ public class ClientGUI {
 		playAnimation.setSize(220,220);
 		playAnimation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (myFloor.isClosed())
-					closeConnection();
+				if (!myFloor.isConnected())
+					disconnect();
 				else if(myList.getSelectedValue() != null)
 					myPlayer.playAnimation(myList.getSelectedValue().toString());
 					
@@ -84,8 +83,8 @@ public class ClientGUI {
 		pauseAnimation.setSize(220,220);
 		pauseAnimation.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				if(myFloor.isClosed())
-					closeConnection();
+				if (!myFloor.isConnected())
+					disconnect();
 				else if(myList.getSelectedValue() != null)
 					myPlayer.pauseAnimation();
 					
@@ -99,8 +98,8 @@ public class ClientGUI {
 		stopAnimation.setSize(220,220);
 		stopAnimation.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				if (myFloor.isClosed())
-					closeConnection();
+				if (!myFloor.isConnected())
+					disconnect();
 				else if(myList.getSelectedValue() != null)
 					myPlayer.stopAnimation();	
 			}
@@ -113,13 +112,6 @@ public class ClientGUI {
 		myFrame.setVisible(true);
 		
 		disconnected();
-		initialConnect();
-	}
-
-	public void initialConnect() {
-		ConnectorThread danceFloorConnector = 
-				new ConnectorThread("ConnectorThread", "dancefloor.mit.edu");
-		danceFloorConnector.start();
 	}
 	
 	private JScrollPane createAnimationList() {
@@ -130,7 +122,7 @@ public class ClientGUI {
 	}
 	
 	private String[] getFileNames() {
-		File curDir = new File(".");
+		File curDir = new File("patterns");
 		File[] animFiles = curDir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				return f.getName().contains(".ddf");
@@ -141,7 +133,7 @@ public class ClientGUI {
 		String s;
 		for (int i = 0; i < animFiles.length; i++) {
 			s = animFiles[i].getName();
-			fNames[i] = s.substring(0,s.indexOf(".ddf"));
+			fNames[i] = s.substring(s.indexOf("/")+1,s.indexOf(".ddf"));
 		}
 		return fNames;
 	}
@@ -161,7 +153,7 @@ public class ClientGUI {
 		JMenuItem disconnectFromFloor = new JMenuItem("Disconnect");
 		disconnectFromFloor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				closeConnection();
+				disconnect();
 			}
 		});
 		
@@ -218,6 +210,51 @@ public class ClientGUI {
 		myMenuBar.add(modes);
 		return myMenuBar;
 	}
+	
+	private void createConnectionDialog() {
+		String hostName = JOptionPane.showInputDialog("Input Server Hostname",
+														"dancefloor.mit.edu");
+		
+		ConnectorThread danceFloorConnector = new ConnectorThread("ConnectorThread", hostName);
+		danceFloorConnector.start();
+	}
+	
+	public void connect(String host) {
+		ConnectorThread danceFloorConnector = 
+				new ConnectorThread("ConnectorThread", host);
+		danceFloorConnector.start();
+	}
+	
+	private void connected() {
+		connectToFloor.setIcon(new ImageIcon(ClientGUI.class.getResource("images/conn.gif")));
+		playAnimation.setEnabled(true);
+		pauseAnimation.setEnabled(true);
+		stopAnimation.setEnabled(true);
+		modes.setEnabled(true);
+	}
+	
+	private void disconnect() {
+		if (myPublishThread != null) {
+			myPublishThread.setStop(true);
+			
+			try { Thread.sleep(500); } catch (InterruptedException e) {}
+			
+			myPublishThread = null;
+			myAnimationLoader = null;
+		}
+		if (myFloor != null)
+			myFloor.disconnect();
+	
+		disconnected();
+	}
+	
+	private void disconnected() {
+		connectToFloor.setIcon(new ImageIcon(ClientGUI.class.getResource("images/disc.gif")));
+		playAnimation.setEnabled(false);
+		pauseAnimation.setEnabled(false);
+		stopAnimation.setEnabled(false);
+		modes.setEnabled(false);
+	}
 
 	class ConnectorThread extends Thread {
 		public String hostName;
@@ -228,12 +265,14 @@ public class ClientGUI {
 		}
 		
 		public void run() {
-			if (myFloor != null && !myFloor.isClosed()) {
-				closeConnection();
+			if (myFloor != null && myFloor.isConnected()) {
+				disconnect();
 			}
 			
 			try {
-				myFloor = new FloorWriter(hostName);
+				myFloor = new RemoteFloor(hostName);
+				System.out.println("Connected to floor: size " + myFloor.getWidth() 
+									+ "x" + myFloor.getHeight());
 				connected();
 			
 			} catch (UnknownHostException e) {
@@ -253,46 +292,6 @@ public class ClientGUI {
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
-	}
-	
-	
-	private void createConnectionDialog() {
-		String hostName = JOptionPane.showInputDialog("Input Server Hostname",
-														"dancefloor.mit.edu");
-		
-		ConnectorThread danceFloorConnector = new ConnectorThread("ConnectorThread", hostName);
-		danceFloorConnector.start();
-	}
-	
-	private void connected() {
-		connectToFloor.setIcon(new ImageIcon(ClientGUI.class.getResource("images/conn.gif")));
-		playAnimation.setEnabled(true);
-		pauseAnimation.setEnabled(true);
-		stopAnimation.setEnabled(true);
-		modes.setEnabled(true);
-	}
-	
-	private void disconnected() {
-		connectToFloor.setIcon(new ImageIcon(ClientGUI.class.getResource("images/disc.gif")));
-		playAnimation.setEnabled(false);
-		pauseAnimation.setEnabled(false);
-		stopAnimation.setEnabled(false);
-		modes.setEnabled(false);
-	}
-	
-	private void closeConnection() {
-		if (myPublishThread != null) {
-			myPublishThread.setStop(true);
-			
-			try { Thread.sleep(500); } catch (InterruptedException e) {}
-			
-			myPublishThread = null;
-			myAnimationLoader = null;
-		}
-		if (myFloor != null)
-			myFloor.disconnect();
-	
-		disconnected();
 	}
 	
 	class Player implements Playable{

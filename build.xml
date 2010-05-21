@@ -5,7 +5,7 @@
 		<pathelement location="lib/xstream-1.1.3.jar"/>
 	</path>
 	
-	<target name="compile">
+	<target name="compile" depends="clean">
 		<javac srcdir="com" classpathref="classpath"/>
 		<jar destfile="DDFv2.0.jar" basedir="." includes="com/** lib/**" manifest="manifest.mf"/>
 		<antcall target="clean"/>
@@ -15,6 +15,10 @@
 		<delete>
 			<fileset dir="com" includes="**/*.class"/>
 		</delete>
+	</target>
+	
+	<target name="doc">
+		<javadoc sourcepath="." destdir="doc" classpathref="classpath"/>
 	</target>
 
 </project>

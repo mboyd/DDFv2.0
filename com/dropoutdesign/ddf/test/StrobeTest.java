@@ -1,74 +1,46 @@
 package com.dropoutdesign.ddf.test;
 
-import com.dropoutdesign.ddf.client.FloorWriter;
+import com.dropoutdesign.ddf.*;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
-import java.util.List;
+import java.lang.Thread;
 
 public class StrobeTest {
 	
-	public static void main(String args[]) throws IOException, UnknownHostException, AWTException {
-		String serverHost;
-		if (args.length < 1) {
-			serverHost = "localhost";
-		} else {
-			serverHost = args[0];
-		}
+	public boolean test(VirtualFloor floor) {
+		//try {
+			System.out.println("Strobing floor... ");
+			
+			int width = floor.getWidth();
+			int height = floor.getHeight();
+			
+			byte[] frame = new byte[width*height*3];
+		
+			for (int i = 0; i < 60; i++) {
 
-		FloorWriter writer = new FloorWriter(serverHost);
-		int width = writer.getFloorWidth();
-		int height = writer.getFloorHeight();
-		
-		/* for (int t = 0; t < pixels.length; t++) {
-			int b = 0;
-			for (int y = 0; y < height; y++) {
-				for (int x = 0; x < width; x++) {
-					for (int c = 0; c < 3; c++) {
-						pixels[b] = (b==t ? (byte)0xFF : (byte)0x00);
-						b++;
-					}
+				for (int l = 0; l < frame.length; l++) {
+					frame[l] = (byte)(((i%2) == 0 ? 1:0)*0xff);
 				}
+				
+				long t1 = System.currentTimeMillis();
+				
+				floor.drawFrame(frame);
+				
+				long t2 = System.currentTimeMillis();
+				System.out.println("\tRedrawn in " + (t2-t1) + "ms.");
+				
+				try { Thread.sleep(500); } catch (InterruptedException e) {}
 			}
-			writer.waitAndSend(pixels);
-		} */
-		
-		Robot robot = new Robot();		// throws AWTException if can't use robot
-		byte[] pixelBytes = new byte[width*height*3];
-		//System.exit(0);
-		//List frameTimes = new ArrayList();
-		while (true) {
-			for (int i = 0; i < 2; i++) {
-				//long startTime = System.currentTimeMillis();
-		
-				//BufferedImage img = robot.createScreenCapture(new Rectangle(4, 28, 16, 32));
-				//int imgWidth = img.getWidth();
-				//int imgHeight = img.getHeight();
-				//int pixelArray[] = new int[imgWidth*imgHeight];
-				//pixelArray = img.getRGB(0, 0, imgWidth, imgHeight, pixelArray, 0 , imgWidth);
-				// p = pixel in, b = byte out
-				int b = 0;
-				for (int p = 0; p < pixelBytes.length/3; p++) {
-					//int pix = pixelArray[p];
-					for (int k = 0;k < 3; k++) {
-						pixelBytes[b++] = (byte)((i == 0 ? 1:0)*0xff);
-					}
-					//pixelBytes[b++] = 0;//(byte)(pix>>16);
-					//pixelBytes[b++] = 0;//(byte)(pix>>8);
-					//pixelBytes[b++] = 0;//(byte)(pix);
-				}
-		
-				/*frameTimes.add(new Integer((int)(System.currentTimeMillis() - startTime)));
-				  if (frameTimes.size() >= 50) {
-				  System.out.println(frameTimes);
-				  frameTimes.clear();
-				  }*/
-		
-				writer.waitAndSend(pixelBytes);
-			}
-		}
+			
+			System.out.println("Done.");
+			return true;
+			
+		/*} catch (Exception e) {
+			System.out.println("Test failed: " + e);
+			e.printStackTrace();
+			return false;
+		}*/
 	}
 }
