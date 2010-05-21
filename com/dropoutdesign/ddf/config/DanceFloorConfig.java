@@ -13,9 +13,9 @@ import com.thoughtworks.xstream.io.StreamException;
 
 public class DanceFloorConfig {
 	
-	public List/*ModuleConfig*/ modules;
+	public List<ModuleConfig> modules;
 	public int maxfps;
-	public List/*String*/ ipwhitelist;
+	public List<String> ipwhitelist;
 	
 	public static final int DEFAULT_MAXFPS = 30;
 
