@@ -5,7 +5,11 @@ import com.dropoutdesign.ddf.*;
 import java.io.IOException;
 
 public class PublishThread extends Thread {
+	
 	private RemoteFloor myFloor;
+	private int frameTime;
+	private long lastRedraw;
+	
 	private boolean switchPattern;
 	private boolean stop;
 	private boolean pause;
@@ -15,6 +19,9 @@ public class PublishThread extends Thread {
 	public PublishThread(String str, RemoteFloor myF) {
 		super(str);
 		myFloor = myF;
+		frameTime = 1000 / myFloor.getFramerate();
+		lastRedraw = System.currentTimeMillis();
+		
 		switchPattern = false;
 		stop = false;
 		pause = false;
@@ -58,24 +65,32 @@ public class PublishThread extends Thread {
 								System.out.println("[Publish] Lost connection to floor, stopping.");
 							
 							} else if(!pause) {
-								System.out.println("[Publish] Drawing frame " + i 
-									+ " of " + numframes);
-								myFloor.drawFrame(data[i]);
-							
-							} else {
-								System.out.println("[Publish] Paused.");
+								//System.out.println("[Publish] Drawing frame " + i 
+								//	+ " of " + numframes);
+								
 								try {
-									Thread.sleep(200);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									myFloor.drawFrame(data[i]);
+								} catch (Exception e) {
+									System.out.println("[Publish] Lost floor connection.");
 								}
+								
+								long t = System.currentTimeMillis();
+								long delta = t - lastRedraw;
+								if (delta < frameTime) {
+									try { Thread.sleep(frameTime - delta); } catch (Exception e) {}
+								} else {
+									System.out.println("[Publish] Buffer underrun.");
+								}
+								lastRedraw = System.currentTimeMillis();
+							
+							} else {	// Paused
+								try { Thread.sleep(200);} catch (InterruptedException e) {}
 								i--;
 							}
 						}
-					} catch (IOException e) {
+					} catch (Exception e) {
 						myFloor.disconnect();
-						// TODO Auto-generated catch block
+						System.out.println("[Publish] IO error, disconnecting.");
 						e.printStackTrace();
 					}
 				}

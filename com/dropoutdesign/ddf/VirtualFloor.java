@@ -12,8 +12,9 @@ public class VirtualFloor extends DanceFloor {
 	
 	private int width = 16;
 	private int height = 32;
+	private boolean connected;
 	
-	private int FRAMERATE = 15;
+	private int FRAMERATE = 5;
 	private int FRAMETIME = 1000 / FRAMERATE;
 	private long lastRedraw;
 	
@@ -25,7 +26,10 @@ public class VirtualFloor extends DanceFloor {
 	ColorModel cm;
 	SampleModel sm;
 
-	public VirtualFloor(){
+	public VirtualFloor() {
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", 
+							"DDF Virtual Floor");
+		
 		cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
 							false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
 		
@@ -35,6 +39,11 @@ public class VirtualFloor extends DanceFloor {
 		createGUI();
 		
 		lastRedraw = System.currentTimeMillis();
+		connected = false;
+	}
+	
+	public VirtualFloor(String address) {
+		this();
 	}
 	
 	private void createGUI() {
@@ -52,7 +61,10 @@ public class VirtualFloor extends DanceFloor {
 	}
 	
 	
-	public void drawFrame(byte frame[]) {
+	public void drawFrame(byte frame[]) throws IOException {
+		
+		if (!connected)
+			throw new IOException("Virtual floor not connected (virtually)");
 		
 		DataBuffer db = new DataBufferByte(frame, width*height);
 		WritableRaster r = Raster.createWritableRaster(sm, db, new Point(0,0));
@@ -82,19 +94,19 @@ public class VirtualFloor extends DanceFloor {
 		return height;
 	}
 	
-	public int getMaxFPS() {
+	public int getFramerate() {
 		return FRAMERATE;
 	}
 	
 	public boolean isConnected() {
-		return true;
+		return connected;
 	}
 	
-	public void connect(String serverAddress) {
-		return;
+	public void connect() {
+		connected = true;
 	}
 	
 	public void disconnect() {
-		return;
+		connected = false;
 	}
 }

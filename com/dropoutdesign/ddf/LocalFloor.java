@@ -11,29 +11,28 @@ import java.awt.Rectangle;
 public class LocalFloor extends DanceFloor {
 	
 	private List<Module> modules;
+	private int numConnectedModules;
 	
 	private int width;
 	private int height;
 	
-	private int maxFPS;
+	private int frameRate;
+	
 	private List<InetAddress> ipWhitelist;
 	
-	public LocalFloor(String confFile) 
-			throws ModuleIOException, UnknownConnectionTypeException, IOException {
+	public LocalFloor(String confFile) throws IOException {
 		
 		this(DanceFloorConfig.readAll(confFile));
 	}
 	
-	public LocalFloor(DanceFloorConfig config) 
-			throws ModuleIOException, UnknownConnectionTypeException {
+	public LocalFloor(DanceFloorConfig config) {
 		
-		maxFPS = config.maxfps;
+		frameRate = config.maxfps;
 		ipWhitelist = config.getWhitelistAddresses();
 		
-		modules = new ArrayList(config.modules.size());
+		modules = new ArrayList<Module>(config.modules.size());
 		for (ModuleConfig mc : config.modules) {
 			Module m = new Module(mc);
-			m.connect();
 		
 			Rectangle bounds = m.getBounds();
 			int x = bounds.x + bounds.width;
@@ -46,6 +45,34 @@ public class LocalFloor extends DanceFloor {
 			modules.add(m);
 		}
 		System.out.println("Initialized floor: " + width + "x" + height);
+	}
+	
+	public void connect() throws ModuleIOException {
+		if (isConnected()) {
+			return;
+		}
+		for (Module m : modules) {
+			try {
+				m.connect();
+				numConnectedModules++;
+			} catch (Exception e) {
+				System.out.println("Failed to connect module: " + e);
+			}
+		}
+		if (numConnectedModules == 0) {
+			throw new ModuleIOException("Unable to connect any modules.");
+		}
+	}
+	
+	public void disconnect() {
+		for (Module m : modules) {
+			m.disconnect();
+		}
+		numConnectedModules = 0;
+	}
+	
+	public boolean isConnected() {
+		return (numConnectedModules > 0);
 	}
 
 	public int getWidth() {
@@ -60,8 +87,8 @@ public class LocalFloor extends DanceFloor {
 		return modules;
 	}
 
-	public int getMaxFPS() {
-		return maxFPS;
+	public int getFramerate() {
+		return frameRate;
 	}
 	
 	public void drawFrame(byte frame[]) throws ModuleIOException {

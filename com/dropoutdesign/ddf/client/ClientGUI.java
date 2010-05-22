@@ -5,6 +5,8 @@ import com.dropoutdesign.ddf.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.imageio.*;
+import java.awt.image.*;
 import java.io.*;
 import java.net.UnknownHostException;
 import java.net.*;
@@ -32,6 +34,10 @@ public class ClientGUI {
 								// 3 is CountdownPlay
 	
 	public ClientGUI(String defaultHost) {
+		
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", 
+							"DDF Client");
+		
 		final String host = defaultHost;
 		playMode = 1;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -48,12 +54,10 @@ public class ClientGUI {
 		
 		myPlayer = new Player();
 		
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		String lafClass = UIManager.getSystemLookAndFeelClassName();
-		try { UIManager.setLookAndFeel(lafClass); } catch (Exception e) {}
-		
 		myFrame = new JFrame("Disco Dance Floor Client");
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		myFrame.setIconImage(new ImageIcon("img.jpg").getImage());
 		
 		myPanel = new JPanel(new BorderLayout());
 		myPanel.add(createAnimationList(), BorderLayout.LINE_START);
@@ -65,7 +69,7 @@ public class ClientGUI {
 		playAnimation = new JButton();
 		playAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/play.png")));
 		playAnimation.setEnabled(false);
-		playAnimation.setSize(220,220);
+		playAnimation.setSize(220, 220);
 		playAnimation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!myFloor.isConnected())
@@ -80,7 +84,7 @@ public class ClientGUI {
 		pauseAnimation = new JButton();
 		pauseAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/pause.png")));
 		pauseAnimation.setEnabled(false);
-		pauseAnimation.setSize(220,220);
+		pauseAnimation.setSize(220, 220);
 		pauseAnimation.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				if (!myFloor.isConnected())
@@ -95,7 +99,7 @@ public class ClientGUI {
 		stopAnimation = new JButton();
 		stopAnimation.setIcon(new ImageIcon(ClientGUI.class.getResource("images/stop.png")));
 		stopAnimation.setEnabled(false);
-		stopAnimation.setSize(220,220);
+		stopAnimation.setSize(220, 220);
 		stopAnimation.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				if (!myFloor.isConnected())
@@ -108,7 +112,7 @@ public class ClientGUI {
 		
 		myPanel.add(playControls, BorderLayout.CENTER);
 		myFrame.setContentPane(myPanel);
-		myFrame.setBounds(0,0,1024,300);
+		myFrame.setBounds(0, 0, 1024, 300);
 		myFrame.setVisible(true);
 		
 		disconnected();
@@ -271,6 +275,7 @@ public class ClientGUI {
 			
 			try {
 				myFloor = new RemoteFloor(hostName);
+				myFloor.connect();
 				System.out.println("Connected to floor: size " + myFloor.getWidth() 
 									+ "x" + myFloor.getHeight());
 				connected();
@@ -303,9 +308,9 @@ public class ClientGUI {
 				myAnimationLoader = new LoadThread("LoadThread", s, myPublishThread, myFloor);
 				myAnimationLoader.start();
 				
-				try { Thread.sleep(2000); } catch (InterruptedException e) {}
+				//try { Thread.sleep(2000); } catch (InterruptedException e) {}
 				
-				myPublishThread.start();
+				//myPublishThread.start();
 			
 			} else if (!isPaused){
 				myAnimationLoader = new LoadThread("LoadThread", s, myPublishThread, myFloor);

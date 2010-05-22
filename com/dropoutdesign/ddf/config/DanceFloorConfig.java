@@ -27,9 +27,9 @@ public class DanceFloorConfig {
 	}
 	
 	public DanceFloorConfig() {
-		modules = new ArrayList();
+		modules = new ArrayList<ModuleConfig>();
 		maxfps = DEFAULT_MAXFPS;
-		ipwhitelist = new ArrayList();
+		ipwhitelist = new ArrayList<String>();
 		ipwhitelist.add("127.0.0.1");
 	}
 	
@@ -42,8 +42,8 @@ public class DanceFloorConfig {
 		}
 	}
 	
-	public List getWhitelistAddresses() {
-		List L = new ArrayList();
+	public List<InetAddress> getWhitelistAddresses() {
+		List<InetAddress> L = new ArrayList<InetAddress>();
 		for (Iterator iter = ipwhitelist.iterator(); iter.hasNext(); ) {
 			String ip = (String)iter.next();
 			InetAddress address = stringToAddress(ip);

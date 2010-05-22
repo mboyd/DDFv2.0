@@ -6,7 +6,9 @@
 	</path>
 	
 	<target name="compile" depends="clean">
-		<javac srcdir="com" classpathref="classpath"/>
+		<javac srcdir="com" classpathref="classpath">
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
 		<jar destfile="DDFv2.0.jar" basedir="." includes="com/** lib/**" manifest="manifest.mf"/>
 		<antcall target="clean"/>
 	</target>

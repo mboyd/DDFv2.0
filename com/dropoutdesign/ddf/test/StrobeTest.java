@@ -10,7 +10,7 @@ import java.lang.Thread;
 public class StrobeTest {
 	
 	public boolean test(VirtualFloor floor) {
-		//try {
+		try {
 			System.out.println("Strobing floor... ");
 			
 			int width = floor.getWidth();
@@ -37,10 +37,10 @@ public class StrobeTest {
 			System.out.println("Done.");
 			return true;
 			
-		/*} catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Test failed: " + e);
 			e.printStackTrace();
 			return false;
-		}*/
+		}
 	}
 }

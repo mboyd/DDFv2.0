@@ -9,7 +9,7 @@ public class TestMain {
 		//ModuleConnection connection = 
 		//		ModuleConnection.open("serial:/dev/tty.usbserial-3B111");
 		
-		List connections = new ArrayList();
+		List<ModuleConnection> connections = new ArrayList<ModuleConnection>();
 		for (int i = 0; i < args.length; i++) {
 			connections.add(ModuleConnection.open("serial:" + args[i]));
 		}
@@ -21,7 +21,7 @@ public class TestMain {
 	
 		byte writeCommand[] = moduleCmd(null, 0);
 
-		List frameTimes = new ArrayList();
+		List<Integer> frameTimes = new ArrayList<Integer>();
 		for (int n = 0; n < 4; n++) {
 			for (int i = 0; i < 96; i++) {
 				long startTime = System.currentTimeMillis();

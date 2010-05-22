@@ -2,15 +2,15 @@ package com.dropoutdesign.ddf.client;
 
 import com.dropoutdesign.ddf.*;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 
 public class LoadThread extends Thread {
 	
 	private String myFileName;
 	private PublishThread myPublisher;
-	private static RemoteFloor myFloor;
+	private RemoteFloor myFloor;
+	
 	private static byte data[][];
 	private static int numframes;
 	
@@ -24,13 +24,14 @@ public class LoadThread extends Thread {
 	public void run() {
 		loadDDF("patterns/" + myFileName + ".ddf");
 		myPublisher.setSwitchPattern(true);
+		myPublisher.start();
 	}
 	
 	public void setFileName(String s) {
 		myFileName = s;
 	}
 	
-	public static void loadDDF(String fileName) {
+	public void loadDDF(String fileName) {
 		numframes = 0;
 
 		int ROWS = myFloor.getWidth();

@@ -69,32 +69,42 @@ public class DDFServer extends Thread {
 				int floorHeight = floor.getHeight();
 				output.write((byte)(floorHeight>>8));
 				output.write((byte)(floorHeight));
+				
+				int framerate = floor.getFramerate();
+				output.write((byte)(framerate>>8));
+				output.write((byte)(framerate));
+				
 				output.flush();
 				
 				byte currentFrame[] = new byte[floorWidth*floorHeight*3];
 			
-				int frameMinMillis = (int)(1000.0/floor.getMaxFPS());
+				int frameMinMillis = (int)(1000.0/floor.getFramerate());
 				long lastFrameTime = System.currentTimeMillis();
 			
 				while (!clientSocket.isInputShutdown()) {
 				
-					debug("Waiting for frame...");
+					//debug("Waiting for frame...");
 					if (!clientSocket.isInputShutdown()) {
 					 	input.readFully(currentFrame);
-					 	debug("Received frame");
+					 	//debug("Received frame, " + (input.available()/1536) + " frames in queue.");
 					}
 					
 					floor.drawFrame(currentFrame);
-			 
-					int msToWait = (int)((lastFrameTime + frameMinMillis) 
-										- System.currentTimeMillis());
+			 		
+					long delta = System.currentTimeMillis() - lastFrameTime;
+					int msToWait = (int)(frameMinMillis - delta);
+					
 					if (msToWait > 0) {
 						//debug("Finished " + msToWait + "ms early.");
 						try { Thread.sleep(msToWait); } catch (InterruptedException e) {}
 					
 					} else if (msToWait < 0) {
-						debug("Finished " + msToWait + "ms late.");
+						//debug("Finished " + msToWait + "ms late.");
 					}
+					
+					System.out.print(" Render done in " + delta + "ms, " + 
+							(input.available()/1536) + " frames in queue." + 
+							"                 \r");
 					
 					lastFrameTime = System.currentTimeMillis();
 				}

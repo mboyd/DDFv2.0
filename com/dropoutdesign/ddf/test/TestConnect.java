@@ -8,29 +8,19 @@ import java.io.*;
 public class TestConnect {
 
 	public boolean test(VirtualFloor myFloor) {
+		
+		try {
+		
 			loadDDF(myFloor, "1ediag.ddf");
 			return true;
 		
-			/*try {
-				RemoteFloor myFloor = new RemoteFloor("dancefloor.mit.edu");
-				System.out.println("Connected");
-				
-				try{ Thread.sleep(2000); } catch (Exception e) {}
-				
-				loadDDF(myFloor, "inter4.ddf");
-			
-			} catch (UnknownHostException e) {
-				System.out.println("Unable to reach dancefloor.mit.edu");
-				System.exit(1);
-			
-			} catch (IOException e) {
-				System.out.println("Unable to connect to server on dancefloor.mit.edu");
-				System.exit(1);
-			}*/
-		
+		} catch (Exception e) {
+			System.out.println("Test failed: " + e);
+			return false;
+		}
 	}
 
-	public int loadDDF(VirtualFloor myFloor, String fileName) {
+	public int loadDDF(VirtualFloor myFloor, String fileName) throws IOException {
 		int numframes = 0, k;
 		int ROWS = myFloor.getWidth();
 		int COLS = myFloor.getHeight();

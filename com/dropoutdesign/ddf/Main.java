@@ -11,21 +11,19 @@ public class Main {
 	
 	public static void main(String args[]) throws IOException {
 		
-		/*VirtualFloor floor = new VirtualFloor();
-		SeqTest test = new SeqTest();
-		test.test(floor);
-		//test.loadDDF(floor, "1ediag.ddf");
-		*/
-		
 		if (args.length > 0 && args[0].equals("-server")) {
 		
-			DanceFloorConfig dfc = DanceFloorConfig.readAll("config.xml");
-			DanceFloor floor = new VirtualFloor();
-			DDFServer server = new DDFServer(floor);
-			server.start();
+			try {
+				DanceFloor floor = DanceFloor.connectFloor("virtual:");
+				DDFServer server = new DDFServer(floor);
+				server.start();
+			
+			} catch (Exception e) {
+				System.out.println("Unable to start server: " + e);
+			}
 		
 		} else {
-			ClientGUI myGUI = new ClientGUI("localhost");	
+			ClientGUI myGUI = new ClientGUI("localhost");
 		}
 	}
 }
