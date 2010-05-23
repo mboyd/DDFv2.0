@@ -17,7 +17,7 @@ public class DanceFloorConfig {
 	public int framerate;
 	public List<String> ipwhitelist;
 	
-	public static final int DEFAULT_MAXFPS = 30;
+	public static final int DEFAULT_FRAMERATE = 30;
 
 	private static XStream xstream;
 	static {
@@ -28,7 +28,7 @@ public class DanceFloorConfig {
 	
 	public DanceFloorConfig() {
 		modules = new ArrayList<ModuleConfig>();
-		maxfps = DEFAULT_MAXFPS;
+		framerate = DEFAULT_FRAMERATE;
 		ipwhitelist = new ArrayList<String>();
 		ipwhitelist.add("127.0.0.1");
 	}
