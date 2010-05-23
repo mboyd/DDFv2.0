@@ -25,7 +25,7 @@ public class Main {
 			}
 		
 		} else {
-			ClientGUI myGUI = new ClientGUI("localhost");
+			ClientGUI myGUI = new ClientGUI("dancefloor.mit.edu");
 		}
 	}
 }

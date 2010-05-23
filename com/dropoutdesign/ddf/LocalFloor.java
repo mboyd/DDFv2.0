@@ -93,7 +93,9 @@ public class LocalFloor extends DanceFloor {
 	
 	public void drawFrame(byte frame[]) throws ModuleIOException {
 		for (Module m : modules) {
-			m.writeFrame(frame);
+			if (m.isConnected()) {
+				m.writeFrame(frame);
+			}
 		}
 	}
 }
