@@ -59,6 +59,8 @@ public class Module {
 	}
 	
 	public void writeFrame(byte[] frame) throws ModuleIOException {
+		System.out.println("Drawing frame: (" + frame[0] + "," + frame[1] + "," + frame[2]
+							+ ") (" + frame[3] + "," + frame[4] + "," + frame[5] + ")");
 		
 		byte[] cmd = new byte[97];
 		cmd[0] = 0x10;
@@ -84,6 +86,10 @@ public class Module {
 				}
 			}
 		}
+		
+		System.out.println("Rendered frame: " + frame[0] + "," + frame[1] + "," + frame[2]);
+		
+		
 		currentConnection.sendCommand(cmd);
 	}
 }
