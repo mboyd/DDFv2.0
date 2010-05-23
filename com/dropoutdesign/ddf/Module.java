@@ -70,7 +70,7 @@ public class Module {
 		int ym = bounds.y + bounds.height;
 		for (int y = bounds.y; y < ym; y++) {
 			for (int c = 0; c < 3; c++) {	// Component
-				for (int x = bounds.x; y < xm; x++) {
+				for (int x = bounds.x; x < xm; x++) {
 				
 					
 					// FIXME: KLUDGE KLUDGE KLUDGE
