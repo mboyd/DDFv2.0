@@ -2,43 +2,43 @@
 	<maxfps>32</maxfps>
 	<modules>
 		<module>
-			<address>serial:/dev/USB7</address>
+			<address>serial:/dev/ttyUSB7</address>
 			<origin>(0,0)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/USB6</address>
+			<address>serial:/dev/ttyUSB6</address>
 			<origin>(0,4)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/USB5</address>
+			<address>serial:/dev/ttyUSB5</address>
 			<origin>(0,8)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/USB4</address>
+			<address>serial:/dev/ttyUSB4</address>
 			<origin>(0,12)</origin>
 			<size>(16,4)</size>
 		</module>
 		
 		<module>
-			<address>serial:/dev/USB3</address>
+			<address>serial:/dev/ttyUSB3</address>
 			<origin>(0,0)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/USB2</address>
+			<address>serial:/dev/ttyUSB2</address>
 			<origin>(0,4)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/USB1</address>
+			<address>serial:/dev/ttyUSB1</address>
 			<origin>(0,8)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/USB0</address>
+			<address>serial:/dev/ttyUSB0</address>
 			<origin>(0,12)</origin>
 			<size>(16,4)</size>
 		</module>

@@ -1,4 +1,5 @@
 # Ignore .DS_Store and compiled Java classes
 *DS_Store*
 *.class
+*.jar
 
