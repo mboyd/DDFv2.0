@@ -27,7 +27,7 @@ public class LocalFloor extends DanceFloor {
 	
 	public LocalFloor(DanceFloorConfig config) {
 		
-		frameRate = config.maxfps;
+		frameRate = config.framerate;
 		ipWhitelist = config.getWhitelistAddresses();
 		
 		modules = new ArrayList<Module>(config.modules.size());
