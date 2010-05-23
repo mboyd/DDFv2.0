@@ -19,8 +19,9 @@ public class Module {
 	public Module(ModuleConfig config) {
 		address = config.getAddress();
 		bounds = config.getBounds();
-		if (bounds.width != 4 || bounds.height != 16) {
-			throw new IllegalArgumentException("Invalid module size.");
+		if (bounds.width != 16 || bounds.height != 4) {
+			throw new IllegalArgumentException("Invalid module size: " + bounds.width 
+										+ "x" + bounds.height);
 		}
 	}
 	

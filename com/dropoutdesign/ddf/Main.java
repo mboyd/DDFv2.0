@@ -14,12 +14,14 @@ public class Main {
 		if (args.length > 0 && args[0].equals("-server")) {
 		
 			try {
-				DanceFloor floor = DanceFloor.connectFloor("virtual:");
+				
+				DanceFloor floor = DanceFloor.connectFloor("local:config.xml");
 				DDFServer server = new DDFServer(floor);
 				server.start();
 			
 			} catch (Exception e) {
 				System.out.println("Unable to start server: " + e);
+				e.printStackTrace();
 			}
 		
 		} else {

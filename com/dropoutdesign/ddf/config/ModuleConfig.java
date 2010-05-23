@@ -27,7 +27,7 @@ public class ModuleConfig {
 	
 	public Rectangle getBounds() {
 		if (bounds == null) {
-			Pattern point = Pattern.compile(".*(\\d+),(\\d+).*");
+			Pattern point = Pattern.compile("\\(+(\\d+),(\\d+)\\)+");
 			Matcher m = point.matcher(origin);
 			if (!m.matches())
 				throw new IllegalArgumentException("Invalid origin: " + origin);

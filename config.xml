@@ -2,43 +2,46 @@
 	<maxfps>32</maxfps>
 	<modules>
 		<module>
-			<address>serial:/dev/cu.usbserial-000011FD</address>
+			<address>serial:/dev/USB7</address>
 			<origin>(0,0)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-000012FD</address>
+			<address>serial:/dev/USB6</address>
 			<origin>(0,4)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-000013FD</address>
+			<address>serial:/dev/USB5</address>
 			<origin>(0,8)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-000014FD</address>
+			<address>serial:/dev/USB4</address>
 			<origin>(0,12)</origin>
 			<size>(16,4)</size>
 		</module>
-
-		<!--
+		
 		<module>
-			<address>serial:/dev/cu.usbserial-00001FD</address>
-			<layout>0-15,16 0-15,17 0-15,18 0-15,19</layout>
+			<address>serial:/dev/USB3</address>
+			<origin>(0,0)</origin>
+			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-00001FD</address>
-			<layout>0-15,20 0-15,21 0-15,22 0-15,23</layout>
+			<address>serial:/dev/USB2</address>
+			<origin>(0,4)</origin>
+			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-00001FD</address>
-			<layout>0-15,24 0-15,25 0-15,26 0-15,27</layout>
+			<address>serial:/dev/USB1</address>
+			<origin>(0,8)</origin>
+			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/cu.usbserial-00001FD</address>
-			<layout>0-15,28 0-15,29 0-15,30 0-15,31</layout>
-		</module>-->
+			<address>serial:/dev/USB0</address>
+			<origin>(0,12)</origin>
+			<size>(16,4)</size>
+		</module>
 
 	</modules>
 	<ipwhitelist>
