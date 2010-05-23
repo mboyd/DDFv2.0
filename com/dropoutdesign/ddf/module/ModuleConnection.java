@@ -38,8 +38,8 @@ public abstract class ModuleConnection {
 	
 		int colonIndex = connectString.indexOf(':');
 		if (colonIndex < 1) {
-			throw new UnknownConnectionTypeException("Connection string doesn't begin with a protocol "
-								 + "followed by a colon.");
+			throw new UnknownConnectionTypeException("Connection string doesn't " 
+					 +" begin with a protocol followed by a colon.");
 		}
 		String protocol = connectString.substring(0,colonIndex);
 		String location = connectString.substring(colonIndex+1);
