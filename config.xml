@@ -1,5 +1,5 @@
 <dancefloor>
-	<maxfps>1</maxfps>
+	<maxfps>30</maxfps>
 	<modules>
 		<module>
 			<address>serial:/dev/ttyUSB7</address>

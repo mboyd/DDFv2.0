@@ -59,8 +59,6 @@ public class Module {
 	}
 	
 	public void writeFrame(byte[] frame) throws ModuleIOException {
-		System.out.println("Drawing frame: (" + frame[0] + "," + frame[1] + "," + frame[2]
-							+ ") (" + frame[3] + "," + frame[4] + "," + frame[5] + ")");
 		
 		byte[] cmd = new byte[97];
 		cmd[0] = 0x10;
@@ -68,6 +66,8 @@ public class Module {
 
 		int xm = bounds.x + bounds.width;
 		int ym = bounds.y + bounds.height;
+		
+		// Note the odd writing pattern...
 		for (int y = bounds.y; y < ym; y++) {
 			for (int c = 0; c < 3; c++) {	// Component
 				for (int x = bounds.x; x < xm; x++) {
@@ -87,10 +87,6 @@ public class Module {
 				}
 			}
 		}
-		
-		System.out.println("Rendered frame: " + cmd[0] + "," + cmd[1] + "," + cmd[2]);
-		
-		
 		currentConnection.sendCommand(cmd);
 	}
 }

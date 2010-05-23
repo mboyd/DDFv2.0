@@ -94,6 +94,11 @@ public class DDFServer extends Thread {
 					long delta = System.currentTimeMillis() - lastFrameTime;
 					int msToWait = (int)(frameMinMillis - delta);
 					
+					
+					System.out.print(" Render done in " + delta + "ms, " + 
+							(input.available()/1536) + " frames in queue." + 
+							"                 \r");
+					
 					if (msToWait > 0) {
 						//debug("Finished " + msToWait + "ms early.");
 						try { Thread.sleep(msToWait); } catch (InterruptedException e) {}
@@ -101,10 +106,6 @@ public class DDFServer extends Thread {
 					} else if (msToWait < 0) {
 						//debug("Finished " + msToWait + "ms late.");
 					}
-					
-					System.out.print(" Render done in " + delta + "ms, " + 
-							(input.available()/1536) + " frames in queue." + 
-							"                 \r");
 					
 					lastFrameTime = System.currentTimeMillis();
 				}
