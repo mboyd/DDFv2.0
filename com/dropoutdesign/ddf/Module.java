@@ -87,7 +87,7 @@ public class Module {
 			}
 		}
 		
-		System.out.println("Rendered frame: " + frame[0] + "," + frame[1] + "," + frame[2]);
+		System.out.println("Rendered frame: " + cmd[0] + "," + cmd[1] + "," + cmd[2]);
 		
 		
 		currentConnection.sendCommand(cmd);
