@@ -59,8 +59,6 @@ public class Module {
 	}
 	
 	public void writeFrame(byte[] frame) throws ModuleIOException {
-		System.out.println("[Module " + address + "]: Writing " + frame.length 
-							+ " bytes across connection " + currentConnection);
 		
 		byte[] cmd = new byte[97];
 		cmd[0] = 0x10;
