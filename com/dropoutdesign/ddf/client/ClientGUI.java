@@ -4,12 +4,14 @@ import com.dropoutdesign.ddf.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.datatransfer.*;
 import javax.swing.*;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
 import java.net.UnknownHostException;
 import java.net.*;
+import java.util.*;
 
 public class ClientGUI {
 	private RemoteFloor myFloor;
@@ -17,7 +19,9 @@ public class ClientGUI {
 	
 	private JFrame myFrame;
 	private JPanel myPanel;
+	
 	private JList myList;
+	
 	private JButton playAnimation;
 	private JButton pauseAnimation;
 	private JButton stopAnimation;
@@ -25,7 +29,7 @@ public class ClientGUI {
 	private JMenuItem connectToFloor;
 	
 	
-	//Threads
+	// Threads
 	private LoadThread myAnimationLoader;
 	private PublishThread myPublishThread;
 
@@ -60,6 +64,7 @@ public class ClientGUI {
 		myFrame.setIconImage(new ImageIcon("img.jpg").getImage());
 		
 		myPanel = new JPanel(new BorderLayout());
+		
 		myPanel.add(createAnimationList(), BorderLayout.LINE_START);
 		
 		myFrame.setJMenuBar(createMenuBar());
@@ -121,6 +126,58 @@ public class ClientGUI {
 	private JScrollPane createAnimationList() {
 		myList = new JList(getFileNames());
 		myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		try {
+			final ImageIcon icon = new ImageIcon(ImageIO.read(new File("1e.bmp")));
+		
+		
+			myList.setCellRenderer( new DefaultListCellRenderer() {
+				public Component getListCellRendererComponent(JList list, Object value, 
+										int index, boolean isSelected, boolean cellHasFocus) {
+
+					super.getListCellRendererComponent(list, value, index, isSelected,
+					 										cellHasFocus);
+					setIcon(icon);
+					return this;
+				}
+			});
+		
+		} catch (Exception e) {e.printStackTrace();}
+		
+		myList.setTransferHandler( new TransferHandler() {
+			
+			public boolean canImport(TransferHandler.TransferSupport support) {
+				DataFlavor[] flavors = support.getDataFlavors();
+				support.setDropAction(COPY);
+				for (DataFlavor f : flavors) {
+					if (f.equals(DataFlavor.javaFileListFlavor)) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			public boolean importData(TransferHandler.TransferSupport support) {
+				Transferable t = support.getTransferable();
+				
+				try {
+					java.util.List l = (java.util.List)
+					 		t.getTransferData(DataFlavor.javaFileListFlavor);
+					for (int i = 0; i < l.size(); i++) {
+						File f = (File) l.get(i);
+						System.out.println("Got file: " + f);
+					}
+				} catch (Exception e) {
+					// Ignore
+				}
+				
+				return true;
+			}
+		});
+		
+		myList.setDragEnabled(true);
+		myList.setDropMode(DropMode.INSERT);
+		
 		JScrollPane scrollPane = new JScrollPane(myList);
 		return scrollPane;
 	}
@@ -139,6 +196,7 @@ public class ClientGUI {
 			s = animFiles[i].getName();
 			fNames[i] = s.substring(s.indexOf("/")+1,s.indexOf(".ddf"));
 		}
+		
 		return fNames;
 	}
 
@@ -185,9 +243,9 @@ public class ClientGUI {
 					String time = JOptionPane.showInputDialog("How long between animation" 
 							+ " switches (seconds)", "180");
 					
-					RandomPlayThread myRanThread = new RandomPlayThread("RandomPlayThread",
-					 					Integer.parseInt(time), myPlayer, getFileNames());
-					myRanThread.start();
+					//RandomPlayThread myRanThread = new RandomPlayThread("RandomPlayThread",
+					// 					Integer.parseInt(time), myPlayer, getFileNames());
+					//myRanThread.start();
 				}
 			}
 		});
