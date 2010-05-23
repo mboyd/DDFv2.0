@@ -42,14 +42,13 @@ public class Module {
 	}
 	
 	public void connect() throws UnknownConnectionTypeException, ModuleIOException {
-
 		currentConnection = ModuleConnection.open(address);
 		
 		System.out.println("Connected to module at " + address);
-		System.out.println("\tfirmware: "
+		/* System.out.println("\tfirmware: "
 				+ Integer.toString(currentConnection.firmwareVersion(), 16));
 		System.out.println("\ti2c: "
-				+ Integer.toString(currentConnection.checkI2C(), 16));
+				+ Integer.toString(currentConnection.checkI2C(), 16)); */
 		
 		currentConnection.reset(); // send soft reset command to module
 	}

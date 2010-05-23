@@ -124,6 +124,7 @@ public class DDFServer extends Thread {
 			} catch (DDFServerException e) {
 				System.err.println("Server Error: closing writer connection.");
 				System.err.println(e);
+				e.printStackTrace();
 				try {
 					clientSocket.shutdownInput();
 					clientSocket.shutdownOutput();
@@ -136,6 +137,7 @@ public class DDFServer extends Thread {
 			} catch (Exception e) {
 				System.err.println("Server Error: closing writer connection.");
 				System.err.println(e);
+				e.printStackTrace();
 				try {
 					clientSocket.shutdownInput();
 					clientSocket.shutdownOutput();
