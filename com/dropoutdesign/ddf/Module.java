@@ -68,9 +68,10 @@ public class Module {
 
 		int xm = bounds.x + bounds.width;
 		int ym = bounds.y + bounds.height;
-		for (int x = bounds.x; x < xm; x++) {
-			for (int y = bounds.y; y < ym; y++) {
-				for (int c = 0; c < 3; c++) {	// Component
+		for (int y = bounds.y; y < ym; y++) {
+			for (int c = 0; c < 3; c++) {	// Component
+				for (int x = bounds.x; y < xm; x++) {
+				
 					
 					// FIXME: KLUDGE KLUDGE KLUDGE
 					int whichByte = (y * 16 + x) * 3 + c;
@@ -78,9 +79,9 @@ public class Module {
 						// flip because 0xF is off					
 					
 					if ((curNib % 2) == 0) {
-						cmd[(int)curNib/2] = (byte)(nib);
+						cmd[(int)(curNib/2)] = (byte)(nib);
 					} else {
-						cmd[(int)curNib/2] |= (byte)(nib << 4);
+						cmd[(int)(curNib/2)] |= (byte)(nib << 4);
 					}
 					curNib++;
 				}
