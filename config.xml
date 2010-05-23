@@ -24,22 +24,22 @@
 		
 		<module>
 			<address>serial:/dev/ttyUSB3</address>
-			<origin>(0,0)</origin>
+			<origin>(0,16)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
 			<address>serial:/dev/ttyUSB2</address>
-			<origin>(0,4)</origin>
+			<origin>(0,20)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
 			<address>serial:/dev/ttyUSB1</address>
-			<origin>(0,8)</origin>
+			<origin>(0,24)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
 			<address>serial:/dev/ttyUSB0</address>
-			<origin>(0,12)</origin>
+			<origin>(0,28)</origin>
 			<size>(16,4)</size>
 		</module>
 
