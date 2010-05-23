@@ -34,7 +34,7 @@ public class Module {
 	}
 	
 	public boolean isConnected() {
-		return (currentConnection == null);
+		return (currentConnection != null);
 	}
 	
 	public ModuleConnection getConnection() {
