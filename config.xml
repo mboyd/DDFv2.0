@@ -1,5 +1,5 @@
 <dancefloor>
-	<framerate>30</framerate>
+	<framerate>1</framerate>
 	<modules>
 		<module>
 			<address>serial:/dev/DDF0</address>
