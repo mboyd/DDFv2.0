@@ -67,7 +67,7 @@ public class VirtualFloor extends DanceFloor {
 		myPanel = new JPanel(new BorderLayout());
 		
 		myFrame.setContentPane(myPanel);
-		myFrame.setBounds(20,20,width*10,height*10);
+		myFrame.setBounds(20,20,width*10,height*10+15);
 		myFrame.setResizable(false);
 		myFrame.setVisible(true);
 	}
