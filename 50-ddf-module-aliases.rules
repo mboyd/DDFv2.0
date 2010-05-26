@@ -1,0 +1,16 @@
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET95FHK", NAME:="DDF0"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET959PI", NAME:="DDF1"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET959PG", NAME:="DDF2"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET959PE", NAME:="DDF3"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N9", NAME:="DDF4"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N7", NAME:="DDF5"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N4", NAME:="DDF6"
+
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N2", NAME:="DDF7"
+
