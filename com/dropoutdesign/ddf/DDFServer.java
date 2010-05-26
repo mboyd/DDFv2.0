@@ -105,7 +105,7 @@ public class DDFServer extends Thread {
 					
 					floor.drawFrame(currentFrame);
 			 		
-					long t2 = System.currenTimeMillis();
+					long t2 = System.currentTimeMillis();
 					long delta = t2 - t1;
 					int msToWait = (int)(frameMinMillis - delta);
 					
@@ -121,8 +121,6 @@ public class DDFServer extends Thread {
 					} else if (msToWait < 0) {
 						//debug("Finished " + msToWait + "ms late.");
 					}
-					
-					lastFrameTime = System.currentTimeMillis();
 				}
 			 
 			} catch (IOException e) {
