@@ -135,9 +135,11 @@ public class LocalFloor extends DanceFloor {
 			Module m = modules.get(i);
 			if (m.isConnected()) {
 				m.writeFrame(frame);
+				byte response = m.getConnection().readResponseByte();
+				System.out.println("Module " + i + " reponse: " + response);
+			} else {
+				System.out.println("Module " + i + " not connected.");
 			}
-			byte response = m.getConnection().readResponseByte();
-			System.out.println("Module " + i + " reponse: " + response);
 		}
 	}
 }
