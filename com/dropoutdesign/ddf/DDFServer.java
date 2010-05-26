@@ -93,7 +93,6 @@ public class DDFServer extends Thread {
 				byte currentFrame[] = new byte[floorWidth*floorHeight*3];
 			
 				int frameMinMillis = (int)(1000.0/floor.getFramerate());
-				long lastFrameTime = System.currentTimeMillis();
 			
 				while (!clientSocket.isInputShutdown()) {
 				
@@ -102,10 +101,12 @@ public class DDFServer extends Thread {
 					 	input.readFully(currentFrame);
 					 	//debug("Received frame, " + (input.available()/1536) + " frames in queue.");
 					}
+					long t1 = System.currentTimeMillis();
 					
 					floor.drawFrame(currentFrame);
 			 		
-					long delta = System.currentTimeMillis() - lastFrameTime;
+					long t2 = System.currenTimeMillis();
+					long delta = t2 - t1;
 					int msToWait = (int)(frameMinMillis - delta);
 					
 					
