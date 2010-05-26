@@ -112,7 +112,7 @@ public class DDFServer extends Thread {
 					
 					System.out.print(" Render done in " + delta + "ms, " + 
 							(input.available()/1536) + " frames in queue." + 
-							"                 \r");
+							"                 ");
 					
 					if (msToWait > 0) {
 						//debug("Finished " + msToWait + "ms early.");
