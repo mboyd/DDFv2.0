@@ -6,8 +6,15 @@ import com.dropoutdesign.ddf.module.*;
 import java.io.*;
 import java.net.*;
 
+/**
+ * Disco Dance Floor Server.
+ * Allows network inspection and control of a local (or virtual) floor.
+ */
 public class DDFServer extends Thread {
 
+	/**
+	 * The default port on which to start the server.
+	 */
 	public static final int SERVER_PORT = 6002;
 
 	private DanceFloor floor;
@@ -16,11 +23,18 @@ public class DDFServer extends Thread {
 	
 	private boolean DEBUG = true;
 
+	/*
+	 * Create a new DDF Server, publishing the specified floor.
+	 * @param floor the floor to publish.
+	 */
 	public DDFServer(DanceFloor floor) {
 		super("Disco Dance Floor Writer");
 		this.floor = floor;
 	}
 	
+	/**
+	 * Start the server.
+	 */
 	public void run() {
 		ServerSocket serverSocket = null;
 		try {

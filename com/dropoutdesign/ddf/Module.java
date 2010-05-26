@@ -5,8 +5,14 @@ import com.dropoutdesign.ddf.module.*;
 import java.util.*;
 import java.awt.Rectangle;
 
+/**
+ * Represents a DDF module, attached to this computer.
+ */
 public class Module {
 
+	/**
+	 * Default wait time to before attempting to re-establish the connection.
+	 */
 	public static final int RETRY_INTERVAL_MS = 500;
 
 	private String address;
@@ -16,6 +22,9 @@ public class Module {
 	private long lastFailureTime = 0;
 	private boolean badAddress = false;
 	
+	/**
+	 * Initialize a module from the supplied ModuleConfig descriptor.
+	 */
 	public Module(ModuleConfig config) {
 		address = config.getAddress();
 		bounds = config.getBounds();
@@ -25,22 +34,40 @@ public class Module {
 		}
 	}
 	
+	/**
+	 * Return the address of this module.
+	 */
 	public String getAddress() {
 		return address;
 	}
 	
+	/**
+	 * Return the bounds of this module, in the dance floor coordinate space.
+	 */
 	public Rectangle getBounds() {
 		return bounds;
 	}
 	
+	/**
+	 * Return the connection status of this module.
+	 */
 	public boolean isConnected() {
 		return (currentConnection != null);
 	}
 	
+	/**
+	 * Return the ModuleConnection used to communicated with this module's hardware.
+	 */
 	public ModuleConnection getConnection() {
 		return currentConnection;
 	}
 	
+	/**
+	 * Connect to this module.
+	 * @throws UnkownConnectionTypeException the address of the module (specified in
+	 * the ModuleConfig) specifies an unkown protocol.
+	 * @throws ModuleIOException the connection could not be established.
+	 */
 	public void connect() throws UnknownConnectionTypeException, ModuleIOException {
 		currentConnection = ModuleConnection.open(address);
 		
@@ -53,11 +80,22 @@ public class Module {
 		currentConnection.reset(); // send soft reset command to module
 	}
 
+	/**
+	 * Disconnect from this module.
+	 */
 	public void disconnect() {
 		currentConnection.close();
 		currentConnection = null;
 	}
 	
+	/**
+	 * Write a frame to this module.
+	 * This method takes a full DanceFloor frame as input, and uses this module's
+	 * <code>bounds</code> field to determine what pixels to send across.
+	 * @param frame a full DanceFloor frame.
+	 * @throws ModuleIOException the frame could not be sent.
+	 * @see com.dropoutdesign.ddf.DanceFloor#drawFrame
+	 */
 	public void writeFrame(byte[] frame) throws ModuleIOException {
 		
 		byte[] cmd = new byte[97];

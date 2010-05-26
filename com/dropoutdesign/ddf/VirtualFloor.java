@@ -8,6 +8,10 @@ import javax.swing.*;
 import javax.imageio.*;
 import java.io.*;
 
+/**
+ * Disco Dance Floor Simulator.
+ * Provides a DanceFloor instance that renders to an on-screen window.
+ */
 public class VirtualFloor extends DanceFloor {
 	
 	private int width = 16;
@@ -26,6 +30,10 @@ public class VirtualFloor extends DanceFloor {
 	ColorModel cm;
 	SampleModel sm;
 
+	/**
+	 * Create a new virtual floor.
+	 * The window will be created immediately, but the floor starts in a disconnected state.
+	 */
 	public VirtualFloor() {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", 
 							"DDF Virtual Floor");
@@ -42,6 +50,10 @@ public class VirtualFloor extends DanceFloor {
 		connected = false;
 	}
 	
+	/**
+	 * Crate a new virtual floor.
+	 * @param address unused.
+	 */
 	public VirtualFloor(String address) {
 		this();
 	}
@@ -60,7 +72,12 @@ public class VirtualFloor extends DanceFloor {
 		myFrame.setVisible(true);
 	}
 	
-	
+	/**
+	 * Render a frame to screen.
+	 * @param frame the frame to draw.
+	 * @throws IOException never.
+	 * @see com.dropoutdesign.ddf.DanceFloor#drawFrame
+	 */
 	public void drawFrame(byte frame[]) throws IOException {
 		
 		if (!connected)
@@ -86,26 +103,44 @@ public class VirtualFloor extends DanceFloor {
 		lastRedraw = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Get the width of this floor.
+	 */
 	public int getWidth() {
 		return width;
 	}
-
+	
+	/**
+	 * Get the height of this floor.
+	 */
 	public int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Get the native framerate of this floor.
+	 */
 	public int getFramerate() {
 		return FRAMERATE;
 	}
 	
+	/**
+	 * Return the connection status of this floor.
+	 */
 	public boolean isConnected() {
 		return connected;
 	}
 	
+	/**
+	 * Connect to this floor.
+	 */
 	public void connect() {
 		connected = true;
 	}
 	
+	/**
+	 * Disconnect from this floor.
+	 */
 	public void disconnect() {
 		connected = false;
 	}

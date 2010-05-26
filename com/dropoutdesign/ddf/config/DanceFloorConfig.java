@@ -8,17 +8,21 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.StreamException;
 
 /**
+ * Describes the configuration of a local Disco Dance Floor in an xml-serializable form.
  * This is a structure meant to be converted to and from XML using XStream.
  */
 
 public class DanceFloorConfig {
 	
+	/** The configuration descriptors of the component modules of this floor. */
 	public List<ModuleConfig> modules;
+	
+	/** The native framerate of this floor. */
 	public int framerate;
+	
+	/** The IP address patterns allowed to connect to this floor.  Not currently implemented. */
 	public List<String> ipwhitelist;
 	
-	public static final int DEFAULT_FRAMERATE = 30;
-
 	private static XStream xstream;
 	static {
 		xstream = new XStream(new DomDriver());
@@ -26,14 +30,19 @@ public class DanceFloorConfig {
 		xstream.alias("module", ModuleConfig.class);
 	}
 	
+	/** 
+	 * Create a new DanceFloorConfig.
+	 * This class is not intended to be instatiated directly; instead, read a configuration
+	 * from disk using <code>DanceFloorConfig.readAll(fileName);</code>
+	 */
 	public DanceFloorConfig() {
 		modules = new ArrayList<ModuleConfig>();
-		framerate = DEFAULT_FRAMERATE;
+		framerate = -1;
 		ipwhitelist = new ArrayList<String>();
 		ipwhitelist.add("127.0.0.1");
 	}
 	
-	public static InetAddress stringToAddress(String address) {
+	private static InetAddress stringToAddress(String address) {
 		try {
 			return InetAddress.getByName(address);
 		}
@@ -42,18 +51,10 @@ public class DanceFloorConfig {
 		}
 	}
 	
-	public List<InetAddress> getWhitelistAddresses() {
-		List<InetAddress> L = new ArrayList<InetAddress>();
-		for (Iterator iter = ipwhitelist.iterator(); iter.hasNext(); ) {
-			String ip = (String)iter.next();
-			InetAddress address = stringToAddress(ip);
-			if (address != null) {
-				L.add(address);
-			}
-		}
-		return L;
-	}
-	
+	/**
+	 * Initialize a DancFloorConfig from a specified file name.
+	 * @throws IOException the file could not be read or is malformed.
+	 */
 	public static DanceFloorConfig readAll(String fileName) throws IOException {
 		Reader r = new BufferedReader(new FileReader(new File(fileName)));
 		DanceFloorConfig df = readAll(r);
@@ -61,19 +62,22 @@ public class DanceFloorConfig {
 		return df;
 	}
 	
-	public static DanceFloorConfig readAll(Reader r) {
+	private static DanceFloorConfig readAll(Reader r) {
 		try {
 			return (DanceFloorConfig)xstream.fromXML(r);
 		} catch (StreamException e) {
 			throw new IllegalArgumentException("Malformed XML: "+ e.getMessage());
 		}
 	}
-
+	
+	/**
+	 * Write this DanceFloorConfig as xml to the specified file writer.
+	 */
 	public void writeAll(Writer w) {
 		xstream.toXML(this, w);
 	}
 
-	public String writeAll() {
+	private String writeAll() {
 		return xstream.toXML(this);
 	}
 }

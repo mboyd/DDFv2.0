@@ -8,6 +8,11 @@ import java.io.*;
 import java.net.InetAddress;
 import java.awt.Rectangle;
 
+/**
+ * A locally connected floor.
+ * Allows inspection and control of a dance floor attached to this
+ * physical machine, generally via usb-serial.
+ */
 public class LocalFloor extends DanceFloor {
 	
 	private List<Module> modules;
@@ -20,11 +25,21 @@ public class LocalFloor extends DanceFloor {
 	
 	private List<InetAddress> ipWhitelist;
 	
+	/**
+	 * Create a floor described by the configuration xml file of the given name.
+	 * @param confFile the name of the file containing configuration data.
+	 * @throws IOException the file could not be read or is malformed.
+	 */
 	public LocalFloor(String confFile) throws IOException {
 		
 		this(DanceFloorConfig.readAll(confFile));
 	}
 	
+	/**
+	 * Create a floor described by the given configuration object.
+	 * The configuration data is used to specify the size, layout, and connection
+	 * of the floor's component modules.
+	 */
 	public LocalFloor(DanceFloorConfig config) {
 		
 		frameRate = config.framerate;
@@ -47,6 +62,10 @@ public class LocalFloor extends DanceFloor {
 		System.out.println("Initialized floor: " + width + "x" + height);
 	}
 	
+	/**
+	 * Connect to the floor.  Will return sucessfully if at least one module is connected.
+	 * @throws ModuleIOException no modules could be connected.
+	 */
 	public void connect() throws ModuleIOException {
 		if (isConnected()) {
 			return;
@@ -64,6 +83,9 @@ public class LocalFloor extends DanceFloor {
 		}
 	}
 	
+	/**
+	 * Disconnect from the floor.
+	 */
 	public void disconnect() {
 		for (Module m : modules) {
 			m.disconnect();
@@ -71,26 +93,47 @@ public class LocalFloor extends DanceFloor {
 		numConnectedModules = 0;
 	}
 	
+	/**
+	 * Return the connection status of the floor.
+	 * @return true if at least one module is connected.
+	 */
 	public boolean isConnected() {
 		return (numConnectedModules > 0);
 	}
 
+	/**
+	 * Return the width of this floor, in pixels.
+	 */
 	public int getWidth() {
 		return width;
 	}
 	
+	/**
+	 * Return the height of this floor, in pixels.
+	 */
 	public int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Return the component modules of this floor.
+	 */
 	public List getModules() {
 		return modules;
 	}
 
+	/**
+	 * Return the native framerate of this floor.
+	 */
 	public int getFramerate() {
 		return frameRate;
 	}
 	
+	/**
+	 * Draw a frame onto the floor.
+	 * @param frame the frame to draw.
+	 * @see com.dropoutdesign.ddf.DanceFloor#drawFrame
+	 */
 	public void drawFrame(byte frame[]) throws ModuleIOException {
 		for (Module m : modules) {
 			if (m.isConnected()) {

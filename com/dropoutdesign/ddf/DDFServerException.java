@@ -1,5 +1,8 @@
 package com.dropoutdesign.ddf;
 
+/**
+ * An exception encountered by a DDFServer.
+ */
 public class DDFServerException extends Exception {
 
 	public DDFServerException() {
