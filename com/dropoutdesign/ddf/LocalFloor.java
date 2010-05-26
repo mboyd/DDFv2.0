@@ -5,7 +5,6 @@ import com.dropoutdesign.ddf.module.*;
 
 import java.util.*;
 import java.io.*;
-import java.net.InetAddress;
 import java.awt.Rectangle;
 
 /**
@@ -22,9 +21,7 @@ public class LocalFloor extends DanceFloor {
 	private int height;
 	
 	private int frameRate;
-	
-	private List<InetAddress> ipWhitelist;
-	
+		
 	/**
 	 * Create a floor described by the configuration xml file of the given name.
 	 * @param confFile the name of the file containing configuration data.
@@ -43,7 +40,6 @@ public class LocalFloor extends DanceFloor {
 	public LocalFloor(DanceFloorConfig config) {
 		
 		frameRate = config.framerate;
-		ipWhitelist = config.getWhitelistAddresses();
 		
 		modules = new ArrayList<Module>(config.modules.size());
 		for (ModuleConfig mc : config.modules) {
@@ -135,10 +131,13 @@ public class LocalFloor extends DanceFloor {
 	 * @see com.dropoutdesign.ddf.DanceFloor#drawFrame
 	 */
 	public void drawFrame(byte frame[]) throws ModuleIOException {
-		for (Module m : modules) {
+		for (int i = 0; i < modules.size(); i++) {
+			Module m = modules.get(i);
 			if (m.isConnected()) {
 				m.writeFrame(frame);
 			}
+			byte response = m.getConnection().readResponseByte();
+			System.out.println("Module " + i + " reponse: " + response);
 		}
 	}
 }

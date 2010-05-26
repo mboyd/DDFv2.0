@@ -131,13 +131,11 @@ public abstract class ModuleConnection {
 			takeBytes();
 			long startTime = System.currentTimeMillis();
 			while (commandInProgress) {
-			if ((int)(System.currentTimeMillis() - startTime) > TIMEOUT_MS) {
-				ModuleIOException t = new TimeoutException("Command timed out on port "+getName());
-				//t.printStackTrace();
-				throw t;
-			}
-			try { Thread.sleep(2); } catch (InterruptedException e) {}
-			takeBytes();
+				if ((int)(System.currentTimeMillis() - startTime) > TIMEOUT_MS) {
+					throw new TimeoutException("Command timed out on port "+ getName());
+				}
+				try { Thread.sleep(2); } catch (InterruptedException e) {}
+				takeBytes();
 			}
 		}
 		catch (IOException io) {
