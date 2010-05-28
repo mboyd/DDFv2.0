@@ -1,10 +1,10 @@
-package com.dropoutdesign.ddf.renderer;
+package com.dropoutdesign.ddf.render;
 
 import com.dropoutdesign.ddf.*;
 
 import java.util.Random;
 
-class GameOfLife {
+public class GameOfLife implements Renderer {
 	
 	public int[][] grid;
 	private int[][] nextGrid;
@@ -103,6 +103,11 @@ class GameOfLife {
 			}
 		}
 		return frame;
+	}
+	
+	public byte[] drawFrame() {
+		step();
+		return render();
 	}
 	
 	public static void main(String[] args) {
