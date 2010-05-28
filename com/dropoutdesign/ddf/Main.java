@@ -14,7 +14,7 @@ import javax.imageio.*;
 public class Main {
 	
 	/**
-	 * Process command line arguments, and either start a DDF Server or Client.
+	 * Process command line arguments, starting a server, client, or renderer.
 	 */
 	public static void main(String args[]) {
 		boolean serve = false;
@@ -35,7 +35,7 @@ public class Main {
 					renderer = args[i++];
 				} else {
 					System.err.println("-render requires a renderer to be specified.");
-					System.err.println("Possible options are:");
+					System.err.println("Built-in renderers are:");
 					System.err.println("\tGameOfLife");
 					System.exit(1);
 				}
