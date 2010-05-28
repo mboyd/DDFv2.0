@@ -44,7 +44,11 @@ public class Main {
 				if (i < args.length) {
 					floorAddr = args[i++];
 				} else {
-					floorAddr = "config.xml";
+					System.err.println("-f requires a floor address to be specified.");
+					System.err.println("Valid floor types are:");
+					System.err.println("\tlocal:<configFile>");
+					System.err.println("\tremote:<remoteAddr>");
+					System.err.println("\tvirtual:");
 				}
 			
 			} else {
