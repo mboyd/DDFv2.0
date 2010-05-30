@@ -110,7 +110,7 @@ public class DDFServer extends Thread {
 					int msToWait = (int)(frameMinMillis - delta);
 					
 					
-					System.out.print(" Render done in " + delta + "ms, " + 
+					System.out.println(" Render done in " + delta + "ms, " + 
 							(input.available()/1536) + " frames in queue." + 
 							"                 ");
 					

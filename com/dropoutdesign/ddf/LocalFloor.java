@@ -14,13 +14,13 @@ import java.awt.Rectangle;
  */
 public class LocalFloor extends DanceFloor {
 	
-	private List<Module> modules;
-	private int numConnectedModules;
+	protected List<Module> modules;
+	protected int numConnectedModules;
 	
-	private int width;
-	private int height;
+	protected int width;
+	protected int height;
 	
-	private int frameRate;
+	protected int frameRate;
 		
 	/**
 	 * Create a floor described by the configuration xml file of the given name.
@@ -114,7 +114,7 @@ public class LocalFloor extends DanceFloor {
 	/**
 	 * Return the component modules of this floor.
 	 */
-	public List getModules() {
+	public List<Module> getModules() {
 		return modules;
 	}
 

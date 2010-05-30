@@ -75,7 +75,7 @@ public abstract class DanceFloor {
 			f = new VirtualFloor();
 
 		} else if (type.equals("local")) {
-			f = new LocalFloor(address);
+			f = new ReliableLocalFloor(address);
 		
 		} else if (type.equals("net")) {
 			f = new RemoteFloor(address);

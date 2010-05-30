@@ -10,17 +10,10 @@ import java.awt.Rectangle;
  */
 public class Module {
 
-	/**
-	 * Default wait time to before attempting to re-establish the connection.
-	 */
-	public static final int RETRY_INTERVAL_MS = 500;
-
-	private String address;
-	private Rectangle bounds;
+	protected String address;
+	protected Rectangle bounds;
 	
-	private ModuleConnection currentConnection = null;
-	private long lastFailureTime = 0;
-	private boolean badAddress = false;
+	protected ModuleConnection currentConnection = null;
 	
 	/**
 	 * Initialize a module from the supplied ModuleConfig descriptor.
