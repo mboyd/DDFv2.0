@@ -67,49 +67,51 @@ public class ReliableModule extends Module {
 	 * Write a frame to this module, attempting to diagnose and repair any failures that arise.
 	 */
 	public void writeFrame(byte[] frame) {
+		ModuleConnection mc = getConnection();
+		
 		if (hasError) {
 			long t = System.currentTimeMillis() - lastError;
 			if (t > RETRY_INTERVAL_MS) {	// Diagnose and re-establish
 				System.out.println("Trying to fix module " + address);
+				boolean shouldReconnect = false;
 				try {
-					ModuleConnection mc = getConnection();
-					if (mc == null) {
-						super.connect();
-					}
 					byte b = mc.ping();
+					if (b != 0)
+						shouldReconnect = true;
+				} catch (Exception e) {		// Connection died, or never alive in the first place
+					shouldReconnect = true;
+				}
 				
-					if (b != (byte)0x00) {	// Module unresponsive
-						System.out.println("Ping failed on module " + address 
-									+ ", cycling link...");
-						disconnect();
-						connect();
-						if (hasError) {	// Failed to re-establish link, give up for now
-							return;
-						}
+				if (shouldReconnect) {	// Module unresponsive or highly confused.
+					System.out.println("Ping failed on module " + address 
+								+ ", cycling link...");
+					disconnect();
+					connect();
+					if (hasError) {	// Failed to re-establish link, give up for now
+						return;
+					}
 				
-					} else {	// Module responsive, reset and continue
-						b = mc.reset();
+				} else {	// Module responsive, reset and continue
+					try {
+						byte b = mc.reset();
 						// TODO: Don't know what these responses mean...
 						System.out.println("Module " + address + " got response " 
-												+ b + " on reset.");
+													+ b + " on reset.");
+					} catch (Exception e) {	// Apparently not
+						hasError = true;
+						lastError = System.currentTimeMillis();
 					}
-				} catch (ModuleConnectionException e) {
-					System.out.println("Got error: " + e);
-					e.printStackTrace();
-					hasError = true;
-					lastError = System.currentTimeMillis();
-					return;
 				}
 			}
 		}
 		
 		try {
 			super.writeFrame(frame);
-			byte response = getConnection().readResponseByte();
+			byte response = mc.readResponseByte();
 			if (response != 0) {
 				System.out.println("Module " + address + " reponse: " + response);
 				System.out.println("\ti2c: "
-						+ Integer.toString(getConnection().checkI2C(), 16));
+						+ Integer.toString(mc.checkI2C(), 16));
 				hasError = true;
 				lastError = System.currentTimeMillis();
 			} else {
