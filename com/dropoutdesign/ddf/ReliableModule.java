@@ -74,7 +74,7 @@ public class ReliableModule extends Module {
 				try {
 					ModuleConnection mc = getConnection();
 					if (mc == null) {
-						connect();
+						super.connect();
 					}
 					byte b = mc.ping();
 				
