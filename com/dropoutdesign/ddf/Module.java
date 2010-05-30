@@ -77,8 +77,10 @@ public class Module {
 	 * Disconnect from this module.
 	 */
 	public void disconnect() {
-		currentConnection.close();
-		currentConnection = null;
+		if (currentConnection != null) {
+			currentConnection.close();
+			currentConnection = null;
+		}
 	}
 	
 	/**
