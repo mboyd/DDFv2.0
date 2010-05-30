@@ -1,6 +1,6 @@
 package com.dropoutdesign.ddf.module;
 
-import gnu.io.*;
+import javax.comm.*;
 import java.io.*;
 
 public class SerialConnection extends ModuleConnection {
@@ -17,11 +17,6 @@ public class SerialConnection extends ModuleConnection {
 		CommPortIdentifier portID;
 		OutputStream outputStream;
 		InputStream inputStream;
-		
-		// Override boneheaded rxtx serial port enumeration
-		String ports = System.getProperty("gnu.io.rxtx.SerialPorts");
-		ports += ":" + port;
-		System.setProperty("gnu.io.rxtx.SerialPorts", ports);
 	
 		try {
 			portID = CommPortIdentifier.getPortIdentifier(port);
