@@ -94,6 +94,8 @@ public class ReliableModule extends Module {
 												+ b + " on reset.");
 					}
 				} catch (ModuleConnectionException e) {
+					System.out.println("Got error: " + e);
+					e.printStackTrace();
 					hasError = true;
 					lastError = System.currentTimeMillis();
 					return;
