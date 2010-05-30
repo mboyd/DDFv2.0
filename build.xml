@@ -1,7 +1,6 @@
 <project default="compile">
 	
 	<path id="classpath">
-		<pathelement location="lib/RXTXcomm.jar"/>
 		<pathelement location="lib/xstream-1.1.3.jar"/>
 	</path>
 	
