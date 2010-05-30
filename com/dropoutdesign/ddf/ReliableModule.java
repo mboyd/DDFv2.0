@@ -73,6 +73,9 @@ public class ReliableModule extends Module {
 				System.out.println("Trying to fix module " + address);
 				try {
 					ModuleConnection mc = getConnection();
+					if (mc == null) {
+						connect();
+					}
 					byte b = mc.ping();
 				
 					if (b != (byte)0x00) {	// Module unresponsive
