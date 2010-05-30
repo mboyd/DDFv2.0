@@ -48,7 +48,7 @@ public class ReliableModule extends Module {
 		shouldConnect = true;
 		try {
 			super.connect();
-		} catch (ModuleConnectionException e) {
+		} catch (Exception e) {
 			hasError = true;
 			lastError = System.currentTimeMillis();
 		}
