@@ -45,9 +45,13 @@ public class ReliableModule extends Module {
 	 * upon later calls to writeFrame if necessary.
 	 */
 	public void connect() {
+		connect(2000);
+	}
+	
+	public void connect(long timeout) {
 		shouldConnect = true;
 		try {
-			super.connect();
+			super.connect(timeout);
 		} catch (Exception e) {
 			hasError = true;
 			lastError = System.currentTimeMillis();
@@ -73,7 +77,7 @@ public class ReliableModule extends Module {
 			long t = System.currentTimeMillis() - lastError;
 			if (t > RETRY_INTERVAL_MS) {	// Diagnose and re-establish
 				System.out.println("Trying to reconnect module " + address);
-				connect();
+				connect(100);
 				if (hasError) {	// Failed to re-establish link, give up for now
 					return;
 				}

@@ -2,6 +2,7 @@
 	
 	<path id="classpath">
 		<pathelement location="lib/xstream-1.1.3.jar"/>
+		<pathelement location="lib/comm.jar"/>
 	</path>
 	
 	<target name="compile" depends="clean">

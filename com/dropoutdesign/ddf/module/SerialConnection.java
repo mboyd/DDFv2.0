@@ -12,6 +12,10 @@ public class SerialConnection extends ModuleConnection {
 	private SerialPort serialPort;
 	
 	protected SerialConnection(String port) throws ModuleIOException {
+		this(port, 2000);
+	}
+	
+	protected SerialConnection(String port, long timeout) throws ModuleIOException {
 		super(PROTOCOL+":"+port);
 
 		CommPortIdentifier portID;

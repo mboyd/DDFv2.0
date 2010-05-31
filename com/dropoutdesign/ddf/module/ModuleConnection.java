@@ -35,6 +35,11 @@ public abstract class ModuleConnection {
 	 */
 	public static ModuleConnection open(String connectString)
 				throws ModuleIOException, UnknownConnectionTypeException {
+		return open(connectString, 2000);
+	}
+	
+	public static ModuleConnection open(String connectString, long timeout)
+				throws ModuleIOException, UnknownConnectionTypeException {
 	
 		int colonIndex = connectString.indexOf(':');
 		if (colonIndex < 1) {
@@ -44,7 +49,7 @@ public abstract class ModuleConnection {
 		String protocol = connectString.substring(0,colonIndex);
 		String location = connectString.substring(colonIndex+1);
 		if (SerialConnection.PROTOCOL.equalsIgnoreCase(protocol)) {
-			return new SerialConnection(location);
+			return new SerialConnection(location, timeout);
 		} else {
 			throw new UnknownConnectionTypeException("Unknown protocol \""+protocol+"\".");
 		}

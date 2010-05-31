@@ -62,7 +62,11 @@ public class Module {
 	 * @throws ModuleIOException the connection could not be established.
 	 */
 	public void connect() throws UnknownConnectionTypeException, ModuleIOException {
-		currentConnection = ModuleConnection.open(address);
+		connect(2000);
+	}
+	
+	public void connect(long timeout) throws UnknownConnectionTypeException, ModuleIOException {
+		currentConnection = ModuleConnection.open(address, timeout);
 		
 		System.out.println("Connected to module at " + address);
 		System.out.println("\tfirmware: "
