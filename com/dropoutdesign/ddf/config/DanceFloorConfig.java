@@ -1,7 +1,6 @@
 package com.dropoutdesign.ddf.config;
 
 import java.util.*;
-import java.net.*;
 import java.io.*;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -20,9 +19,6 @@ public class DanceFloorConfig {
 	/** The native framerate of this floor. */
 	public int framerate;
 	
-	/** The IP address patterns allowed to connect to this floor.  Not currently implemented. */
-	public List<String> ipwhitelist;
-	
 	private static XStream xstream;
 	static {
 		xstream = new XStream(new DomDriver());
@@ -38,17 +34,6 @@ public class DanceFloorConfig {
 	public DanceFloorConfig() {
 		modules = new ArrayList<ModuleConfig>();
 		framerate = -1;
-		ipwhitelist = new ArrayList<String>();
-		ipwhitelist.add("127.0.0.1");
-	}
-	
-	private static InetAddress stringToAddress(String address) {
-		try {
-			return InetAddress.getByName(address);
-		}
-		catch (UnknownHostException e) {
-			return null;
-		}
 	}
 	
 	/**

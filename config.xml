@@ -44,8 +44,4 @@
 		</module>
 
 	</modules>
-	<ipwhitelist>
-		<string>127.0.0.1</string>
-		<string>18.238.2.229</string>
-	</ipwhitelist>
 </dancefloor>

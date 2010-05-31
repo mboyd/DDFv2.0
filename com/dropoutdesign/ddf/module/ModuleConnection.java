@@ -1,31 +1,32 @@
 package com.dropoutdesign.ddf.module;
 
+import java.lang.Thread;
+import java.util.concurrent.*;
 import java.io.*;
 import javax.comm.*;
 
-public class ModuleConnection {
+public class ModuleConnection extends Thread {
 	
-	public static final int MAX_RESPONSE_BYTES = 10;
-	public static final int TIMEOUT_MS = 60;
+	private final String address;
+	private final OutputStream outStream;
+	private final InputStream inStream;
+	
+	public static final int MAX_QUEUE_SIZE = 10;
 	
 	public static final int SERIAL_BAUD = 57600;
 	private SerialPort serialPort;
 	
-	private OutputStream outStream;
-	private InputStream inStream;
-	private String name;
+	private BlockingQueue<byte[]> cmdQueue;
+	private BlockingQueue<byte[]> respQueue;
 	
-	private byte responseBytes[] = new byte[MAX_RESPONSE_BYTES];
-	private int numReceivedBytes = 0;
-
-	private boolean commandInProgress = false;
-	private int numBytesExpected;
-	private boolean usesStatusByte;
-	
-	public ModuleConnection(String name, InputStream in, OutputStream out) {
-		this.name = name;
+	public ModuleConnection(String address, InputStream in, OutputStream out) {
+		super("ModuleConnection: " + address);
+		this.address = address;
 		inStream = in;
 		outStream = out;
+		
+		cmdQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
+		respQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
 	}
 	
 	/**
@@ -52,7 +53,7 @@ public class ModuleConnection {
 						   SerialPort.DATABITS_8,
 						   SerialPort.STOPBITS_1,
 						   SerialPort.PARITY_NONE);
-			//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
 			outputStream = serialPort.getOutputStream();
 			inputStream = serialPort.getInputStream();		
@@ -72,146 +73,13 @@ public class ModuleConnection {
 
 		ModuleConnection mc = new ModuleConnection(address, inputStream, outputStream);
 		mc.serialPort = serialPort;
+		mc.start();
 		return mc;
 	}
-
-	private void clearInput() {
-		try {
-			if (inStream.available() > 0) {
-				inStream.skip(inStream.available());
-			}
-		} catch (IOException io) {}
-	}
 	
-	public void sendCommand(byte cmd[]) throws ModuleIOException {
-		clearInput();
-		numReceivedBytes = 0;
-		try {
-			outStream.write(cmd);
-		} catch (IOException io) {
-			throw new ModuleIOException(io);
-		}
-		commandInProgress = true;
-		numBytesExpected = getNumBytesExpected(((int)cmd[0])&0xFF);
-		usesStatusByte = getUsesStatusByte(((int)cmd[0])&0xFF);
-	}
-
-	public void sendCommand(int cmd) throws ModuleIOException {
-		clearInput();
-		numReceivedBytes = 0;
-		try {
-			outStream.write(cmd);
-		} catch (IOException io) {
-			throw new ModuleIOException(io);
-		}
-		commandInProgress = true;
-		numBytesExpected = getNumBytesExpected(((int)cmd)&0xFF);
-		usesStatusByte = getUsesStatusByte(((int)cmd)&0xFF);
-	}
-
-	public byte ping() throws ModuleIOException {
-		sendCommand(0x50);
-		return readResponseByte();
-	}
-
-	public byte blackout() throws ModuleIOException {
-		sendCommand(0x40);
-		return readResponseByte();
-	}
-
-	public byte reset() throws ModuleIOException {
-		sendCommand(0x60);
-		return readResponseByte();
-	}
-
-	public byte selfTest() throws ModuleIOException {
-		sendCommand(0x80);
-		return readResponseByte();
-	}
-
-	public byte firmwareVersion() throws ModuleIOException {
-		sendCommand(0x70);
-		readResponsePrivate();
-		if (responseBytes[0] != 0) { // for old firmware
-			return responseBytes[0];
-		}
-		else {
-			return responseBytes[1];	
-		}
-	}
-
-	public int checkI2C() throws ModuleIOException {
-		sendCommand(0x61);
-		readResponsePrivate();
-		if (responseBytes[0] != 0) { // for old firmware
-			return -1;
-		}
-		else {
-			return ((((int)responseBytes[1])&0xFF)<<8) | (((int)responseBytes[2])&0xFF);
-		}
-	}
-	
-	private void readResponsePrivate() throws ModuleIOException {
-		try {
-			takeBytes();
-			long startTime = System.currentTimeMillis();
-			while (commandInProgress) {
-				if ((int)(System.currentTimeMillis() - startTime) > TIMEOUT_MS) {
-					throw new TimeoutException("Command timed out on port "+ getName());
-				}
-				try { Thread.sleep(2); } catch (InterruptedException e) {}
-				takeBytes();
-			}
-		}
-		catch (IOException io) {
-			throw new ModuleIOException(io);
-		}
-	}
-
-	public byte readResponseByte() throws ModuleIOException {
-		readResponsePrivate();
-		return responseBytes[0];	
-	}
-
-	public void readResponse(byte destArray[]) throws ModuleIOException {
-		readResponse(destArray, 0);
-	}
-	
-	public void readResponse(byte destArray[], int startOffset) throws ModuleIOException {
-		readResponsePrivate();
-		System.arraycopy(responseBytes, 0, destArray, startOffset, numReceivedBytes);
-	}
-	
-	public boolean isBusy() throws ModuleIOException {
-		try {
-			takeBytes();
-		} catch (IOException io) {
-			throw new ModuleIOException(io);
-		}
-		return commandInProgress;
-	}
-
-	public int tryReadResponse() throws ModuleIOException {
-		if (!isBusy()) {
-			return (int)responseBytes[0];
-		}
-		return -1;
-	}
-	
-	public boolean tryReadResponse(byte destArray[]) throws ModuleIOException {
-		return tryReadResponse(destArray, 0);
-	}
-	
-	public boolean tryReadResponse(byte destArray[], int startOffset) throws ModuleIOException {
-		if (!isBusy()) {
-			System.arraycopy(responseBytes, 0, destArray, startOffset, numReceivedBytes);
-			return true;
-		}
-		return false;
-	}
-
 	public void close() {
 		try {
+			interrupt();
 			inStream.close();
 			outStream.close();
 			serialPort.close();
@@ -219,11 +87,125 @@ public class ModuleConnection {
 			// ignore exception when closing
 		}
 	}
-
-	public String getName() {
-		return name;
+	
+	public void run() {
+		while (true) {
+			if (interrupted()) {
+				System.err.println("Thread module " + address + " interrupted, dying.");
+				return;
+			}
+			
+			byte[] cmd = null;
+			try { cmd = cmdQueue.take(); } catch (InterruptedException e) {
+				System.err.println("Thread module " + address + " interrupted, dying.");
+				return;
+			}
+			
+			try {
+				outStream.write(cmd);
+			} catch (IOException e) {
+				System.err.println("Write error, module " + address);
+				e.printStackTrace();
+			}
+			
+			int respLen = getNumBytesExpected(cmd[0]);
+			byte[] resp = new byte[respLen];
+			
+			int bytesRead = 0;
+			while (bytesRead < respLen) {
+				int r = 0;
+				try {
+					r = inStream.read(resp, bytesRead, respLen-bytesRead);
+				} catch (IOException e) {
+					System.err.println("Read error, module " + address);
+					e.printStackTrace();
+					break;
+				}
+				
+				if (r == -1) {
+					System.err.println("Connection terminated, module " + address);
+					break;
+				} else {
+					bytesRead += r;
+				}
+			}
+			
+			try { respQueue.put(resp); } catch (InterruptedException e) {
+				System.err.println("Thread module " + address + "interrupted, dying.");
+				return;
+			}
+		}
+	}
+	
+	public void sendCommand(byte cmd[]) {
+		try {
+			cmdQueue.put(cmd);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted while enqueueing command.");
+		}
 	}
 
+	public void sendCommand(int cmd) throws ModuleIOException {
+		byte[] c = new byte[1];
+		c[0] = (byte)cmd;
+		sendCommand(c);
+	}
+	
+	public byte[] receiveResponse() {
+		byte[] resp = null;
+		try { resp = respQueue.take(); } catch (InterruptedException e) {
+			System.err.println("Interrupted while dequeueing response.");
+		}
+		return resp;
+	}
+	
+	public byte receiveResponseByte() {
+		byte[] resp = receiveResponse();
+		return resp[0];
+	}
+
+	public byte ping() throws ModuleIOException {
+		sendCommand(0x50);
+		return receiveResponseByte();
+	}
+
+	public byte blackout() throws ModuleIOException {
+		sendCommand(0x40);
+		return receiveResponseByte();
+	}
+
+	public byte reset() throws ModuleIOException {
+		sendCommand(0x60);
+		return receiveResponseByte();
+	}
+
+	public byte selfTest() throws ModuleIOException {
+		sendCommand(0x80);
+		return receiveResponseByte();
+	}
+
+	public byte firmwareVersion() throws ModuleIOException {
+		sendCommand(0x70);
+		byte[] resp = receiveResponse();
+		if (resp[0] != 0) { // for old firmware
+			return resp[0];
+		}
+		else {
+			return resp[1];	
+		}
+	}
+
+	public int checkI2C() throws ModuleIOException {
+		sendCommand(0x61);
+		byte[] resp = receiveResponse();
+		if (resp[0] != 0) { // for old firmware
+			return -1;
+		}
+		else {
+			return ((((int)resp[1])&0xFF)<<8) | (((int)resp[2])&0xFF);
+		}
+	}
+	
 	private int getNumBytesExpected(int cmd) {
 		switch (cmd) {
 		case 0x20: return 9;
@@ -237,20 +219,5 @@ public class ModuleConnection {
 	private boolean getUsesStatusByte(int cmd) {
 		//return (cmd & 0xF0) != 0x70;
 		return true;
-	}
-	
-	private boolean responseComplete() {
-		return numReceivedBytes > 0 
-			&& ((numReceivedBytes == numBytesExpected) 
-			|| (usesStatusByte && responseBytes[0] != 0x00));
-	}
-	
-	private void takeBytes() throws IOException {
-		while (inStream.available() > 0 && !responseComplete()) {
-			responseBytes[numReceivedBytes++] = (byte)inStream.read();
-		}
-		if (responseComplete()) {
-			commandInProgress = false;
-		}
 	}
 }

@@ -135,7 +135,7 @@ public class LocalFloor extends DanceFloor {
 			Module m = modules.get(i);
 			if (m.isConnected()) {
 				m.writeFrame(frame);
-				byte response = m.getConnection().readResponseByte();
+				byte response = m.getConnection().receiveResponseByte();
 				if (response != 0) {
 					System.out.println("Module " + i + " reponse: " + response);
 					System.out.println("\ti2c: "

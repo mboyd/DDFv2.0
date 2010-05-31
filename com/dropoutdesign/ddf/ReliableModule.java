@@ -93,7 +93,7 @@ public class ReliableModule extends Module {
 		
 		try {
 			super.writeFrame(frame);
-			byte response = mc.readResponseByte();
+			byte response = mc.receiveResponseByte();
 			if (response != 0) {
 				System.out.println("Module " + address + " reponse: " + response);
 				System.out.println("\ti2c: "
