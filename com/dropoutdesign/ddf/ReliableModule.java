@@ -48,6 +48,9 @@ public class ReliableModule extends Module {
 		connect(2000);
 	}
 	
+	/**
+	 * Connect using a default timeout.
+	 */
 	public void connect(long timeout) {
 		shouldConnect = true;
 		try {
