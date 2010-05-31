@@ -49,11 +49,14 @@ public class ModuleConnection extends Thread {
 		try {
 			portID = CommPortIdentifier.getPortIdentifier(address);
 			serialPort = (SerialPort)portID.open("Disco Dance Floor", (int)timeout);
+			
+			System.out.println("");
+
 			serialPort.setSerialPortParams(SERIAL_BAUD,
 						   SerialPort.DATABITS_8,
 						   SerialPort.STOPBITS_1,
 						   SerialPort.PARITY_NONE);
-			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+			//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
 			outputStream = serialPort.getOutputStream();
 			inputStream = serialPort.getInputStream();		
@@ -68,6 +71,7 @@ public class ModuleConnection extends Thread {
 			throw new ModuleIOException("Could not initialize port " + address, e);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new ModuleIOException("I/O error on serial port " + address, e);
 		}
 
