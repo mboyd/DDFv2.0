@@ -12,6 +12,7 @@ public class ModuleConnection extends Thread {
 	private final InputStream inStream;
 	
 	public static final int MAX_QUEUE_SIZE = 10;
+	public static final int IO_TIMEOUT = 50;
 	
 	public static final int SERIAL_BAUD = 57600;
 	private SerialPort serialPort;
@@ -50,13 +51,14 @@ public class ModuleConnection extends Thread {
 			portID = CommPortIdentifier.getPortIdentifier(address);
 			serialPort = (SerialPort)portID.open("Disco Dance Floor", (int)timeout);
 			
-			System.out.println("");
-
+			System.out.print("");	// Sketchy fix, makes params work
 			serialPort.setSerialPortParams(SERIAL_BAUD,
 						   SerialPort.DATABITS_8,
 						   SerialPort.STOPBITS_1,
 						   SerialPort.PARITY_NONE);
-			//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+						
+			System.out.print("");
+			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
 			outputStream = serialPort.getOutputStream();
 			inputStream = serialPort.getInputStream();		
@@ -94,50 +96,59 @@ public class ModuleConnection extends Thread {
 	
 	public void run() {
 		while (true) {
-			if (interrupted()) {
-				System.err.println("Thread module " + address + " interrupted, dying.");
-				return;
-			}
-			
-			byte[] cmd = null;
-			try { cmd = cmdQueue.take(); } catch (InterruptedException e) {
-				System.err.println("Thread module " + address + " interrupted, dying.");
-				return;
-			}
-			
 			try {
-				outStream.write(cmd);
-			} catch (IOException e) {
-				System.err.println("Write error, module " + address);
-				e.printStackTrace();
-			}
+				if (interrupted()) {
+					System.err.println("Thread module " + address + " interrupted, dying.");
+					return;
+				}
 			
-			int respLen = getNumBytesExpected(cmd[0]);
-			byte[] resp = new byte[respLen];
+				byte[] cmd = null;
+				cmd = cmdQueue.take();
 			
-			int bytesRead = 0;
-			while (bytesRead < respLen) {
-				int r = 0;
 				try {
-					r = inStream.read(resp, bytesRead, respLen-bytesRead);
+					outStream.write(cmd);
 				} catch (IOException e) {
-					System.err.println("Read error, module " + address);
+					System.err.println("Write error, module " + address);
 					e.printStackTrace();
-					break;
 				}
-				
-				if (r == -1) {
-					System.err.println("Connection terminated, module " + address);
-					break;
-				} else {
-					bytesRead += r;
-				}
-			}
 			
-			try { respQueue.put(resp); } catch (InterruptedException e) {
-				System.err.println("Thread module " + address + "interrupted, dying.");
-				return;
+				int respLen = getNumBytesExpected(cmd[0]);
+				byte[] resp = new byte[respLen];
+			
+				int bytesRead = 0;
+				long readStart = System.currentTimeMillis();
+
+				while (bytesRead < respLen) {
+					int r = 0;
+					try {
+						r = inStream.read(resp, bytesRead, respLen-bytesRead);
+					} catch (IOException e) {
+						System.err.println("Read error, module " + address);
+						e.printStackTrace();
+						break;
+					}
+				
+					if (r == -1) {
+						System.err.println("Connection terminated, module " + address);
+						break;
+					} else {
+						bytesRead += r;
+					}
+				
+					long t = System.currentTimeMillis();
+					if ((t - readStart) > IO_TIMEOUT) {
+						System.err.println("Read timeout, module " + address);
+						break;
+					}
+				
+					sleep(5);
+				}
+			
+				respQueue.put(resp);
 			}
+		} catch (InterruptedException e) {
+			System.err.println("Thread module " + address + "interrupted, dying.");
+			return;
 		}
 	}
 	
