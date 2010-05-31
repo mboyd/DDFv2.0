@@ -54,6 +54,7 @@ public class ReliableModule extends Module {
 			super.connect(timeout);
 		} catch (Exception e) {
 			System.out.println("Connect failed on module " + address + ": " + e);
+			super.disconnect();
 			hasError = true;
 			lastError = System.currentTimeMillis();
 		}
