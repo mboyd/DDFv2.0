@@ -72,35 +72,10 @@ public class ReliableModule extends Module {
 		if (hasError) {
 			long t = System.currentTimeMillis() - lastError;
 			if (t > RETRY_INTERVAL_MS) {	// Diagnose and re-establish
-				System.out.println("Trying to fix module " + address);
-				boolean shouldReconnect = false;
-				try {
-					byte b = mc.ping();
-					if (b != 0)
-						shouldReconnect = true;
-				} catch (Exception e) {		// Connection died, or never alive in the first place
-					shouldReconnect = true;
-				}
-				
-				if (shouldReconnect) {	// Module unresponsive or highly confused.
-					System.out.println("Ping failed on module " + address 
-								+ ", cycling link...");
-					disconnect();
-					connect();
-					if (hasError) {	// Failed to re-establish link, give up for now
-						return;
-					}
-				
-				} else {	// Module responsive, reset and continue
-					try {
-						byte b = mc.reset();
-						// TODO: Don't know what these responses mean...
-						System.out.println("Module " + address + " got response " 
-													+ b + " on reset.");
-					} catch (Exception e) {	// Apparently not
-						hasError = true;
-						lastError = System.currentTimeMillis();
-					}
+				System.out.println("Trying to reconnect module " + address);
+				connect();
+				if (hasError) {	// Failed to re-establish link, give up for now
+					return;
 				}
 			}
 		}
@@ -120,7 +95,7 @@ public class ReliableModule extends Module {
 				hasError = false;
 			}
 		} catch (Exception e) {
-			disconnect()
+			disconnect();
 			hasError = true;
 			lastError = System.currentTimeMillis();
 		}
