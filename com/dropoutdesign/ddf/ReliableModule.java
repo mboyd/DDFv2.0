@@ -105,6 +105,8 @@ public class ReliableModule extends Module {
 			}
 		}
 		
+		// FIXME: Sometimes we come out with a null connection for one round
+		
 		try {
 			super.writeFrame(frame);
 			byte response = mc.readResponseByte();
@@ -118,6 +120,7 @@ public class ReliableModule extends Module {
 				hasError = false;
 			}
 		} catch (Exception e) {
+			disconnect()
 			hasError = true;
 			lastError = System.currentTimeMillis();
 		}
