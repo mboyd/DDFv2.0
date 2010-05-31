@@ -115,24 +115,26 @@ public class ModuleConnection extends Thread {
 				int respLen = getNumBytesExpected(cmd[0]);
 				byte[] resp = new byte[respLen];
 			
-				int bytesRead = 0;
+				int bytesToRead = respLen;
 				long readStart = System.currentTimeMillis();
 
-				while (bytesRead < respLen) {
-					int r = 0;
+				while (bytesToRead > 0) {
+					int bytesRead = 0;
 					try {
-						r = inStream.read(resp, bytesRead, respLen-bytesRead);
+						int bytesAvailable = inStream.available();
+						int r = (bytesAvailable > bytesToRead) ? bytesToRead : bytesAvailable;
+						bytesRead = inStream.read(resp, respLen-bytesToRead, r);
 					} catch (IOException e) {
 						System.err.println("Read error, module " + address);
 						e.printStackTrace();
 						break;
 					}
 				
-					if (r == -1) {
+					if (bytesRead == -1) {
 						System.err.println("Connection terminated, module " + address);
 						break;
 					} else {
-						bytesRead += r;
+						bytesToRead -= bytesRead;
 					}
 				
 					long t = System.currentTimeMillis();
