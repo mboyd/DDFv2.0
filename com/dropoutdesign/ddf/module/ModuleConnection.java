@@ -120,16 +120,19 @@ public class ModuleConnection extends Thread {
 
 				while (bytesToRead > 0) {
 					int bytesRead = 0;
-					try {
-						int bytesAvailable = inStream.available();
-						int r = (bytesAvailable > bytesToRead) ? bytesToRead : bytesAvailable;
-						System.out.print("Attempting to read " + r + " bytes... ");
-						bytesRead = inStream.read(resp, respLen-bytesToRead, r);
-						System.out.println("done.");
-					} catch (IOException e) {
-						System.err.println("Read error, module " + address);
-						e.printStackTrace();
-						break;
+					int bytesAvailable = inStream.available();
+					int r = (bytesAvailable > bytesToRead) ? bytesToRead : bytesAvailable;
+					
+					if (r > 0) {
+						try {
+							System.out.print("Attempting to read " + r + " bytes... ");
+							bytesRead = inStream.read(resp, respLen-bytesToRead, r);
+							System.out.println("done.");
+						} catch (IOException e) {
+							System.err.println("Read error, module " + address);
+							e.printStackTrace();
+							break;
+						}
 					}
 				
 					if (bytesRead == -1) {
