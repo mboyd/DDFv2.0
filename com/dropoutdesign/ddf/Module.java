@@ -61,11 +61,11 @@ public class Module {
 	 * the ModuleConfig) specifies an unkown protocol.
 	 * @throws ModuleIOException the connection could not be established.
 	 */
-	public void connect() throws UnknownConnectionTypeException, ModuleIOException {
+	public void connect() throws ModuleIOException {
 		connect(2000);
 	}
 	
-	public void connect(long timeout) throws UnknownConnectionTypeException, ModuleIOException {
+	public void connect(long timeout) throws ModuleIOException {
 		currentConnection = ModuleConnection.open(address, timeout);
 		
 		System.out.println("Connected to module at " + address);

@@ -1,11 +1,15 @@
 package com.dropoutdesign.ddf.module;
 
 import java.io.*;
+import javax.comm.*;
 
-public abstract class ModuleConnection {
+public class ModuleConnection {
 	
 	public static final int MAX_RESPONSE_BYTES = 10;
 	public static final int TIMEOUT_MS = 60;
+	
+	public static final int SERIAL_BAUD = 57600;
+	private SerialPort serialPort;
 	
 	private OutputStream outStream;
 	private InputStream inStream;
@@ -18,41 +22,57 @@ public abstract class ModuleConnection {
 	private int numBytesExpected;
 	private boolean usesStatusByte;
 	
-	protected ModuleConnection(String name) {
+	public ModuleConnection(String name, InputStream in, OutputStream out) {
 		this.name = name;
-	}
-
-	protected void init(OutputStream outStream, InputStream inStream) {
-		this.outStream = outStream;
-		this.inStream = inStream;
+		inStream = in;
+		outStream = out;
 	}
 	
 	/**
-	 * Open a connection given a string such as "serial:COM4" that
-	 * specifies a protocol and a location such as a port name or IP
-	 * address.	 The connection must be closed using the close()
+	 * Open a connection given a string such as "/dev/DDF0" that
+	 * specifies the location of a serial-port connected module.
+	 * The connection must be closed using the close()
 	 * method when it is no longer needed.
 	 */
-	public static ModuleConnection open(String connectString)
-				throws ModuleIOException, UnknownConnectionTypeException {
-		return open(connectString, 2000);
+	public static ModuleConnection open(String address) throws ModuleIOException{
+		return open(address, 2000);
 	}
 	
-	public static ModuleConnection open(String connectString, long timeout)
-				throws ModuleIOException, UnknownConnectionTypeException {
-	
-		int colonIndex = connectString.indexOf(':');
-		if (colonIndex < 1) {
-			throw new UnknownConnectionTypeException("Connection string doesn't " 
-					 +" begin with a protocol followed by a colon.");
+	public static ModuleConnection open(String address, long timeout) throws ModuleIOException {
+			
+		CommPortIdentifier portID;
+		OutputStream outputStream;
+		InputStream inputStream;
+		SerialPort serialPort;
+
+		try {
+			portID = CommPortIdentifier.getPortIdentifier(address);
+			serialPort = (SerialPort)portID.open("Disco Dance Floor", (int)timeout);
+			serialPort.setSerialPortParams(SERIAL_BAUD,
+						   SerialPort.DATABITS_8,
+						   SerialPort.STOPBITS_1,
+						   SerialPort.PARITY_NONE);
+			//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+
+			outputStream = serialPort.getOutputStream();
+			inputStream = serialPort.getInputStream();		
+
+		} catch (NoSuchPortException e) {
+			throw new ModuleIOException("No serial port at " + address, e);
+
+		} catch (PortInUseException e) {
+			throw new ModuleIOException("Serial port " + address + " in use.", e);
+
+		} catch (UnsupportedCommOperationException e) {
+			throw new ModuleIOException("Could not initialize port " + address, e);
+
+		} catch (IOException e) {
+			throw new ModuleIOException("I/O error on serial port " + address, e);
 		}
-		String protocol = connectString.substring(0,colonIndex);
-		String location = connectString.substring(colonIndex+1);
-		if (SerialConnection.PROTOCOL.equalsIgnoreCase(protocol)) {
-			return new SerialConnection(location, timeout);
-		} else {
-			throw new UnknownConnectionTypeException("Unknown protocol \""+protocol+"\".");
-		}
+
+		ModuleConnection mc = new ModuleConnection(address, inputStream, outputStream);
+		mc.serialPort = serialPort;
+		return mc;
 	}
 
 	private void clearInput() {
@@ -194,6 +214,7 @@ public abstract class ModuleConnection {
 		try {
 			inStream.close();
 			outStream.close();
+			serialPort.close();
 		} catch (IOException io) {
 			// ignore exception when closing
 		}
