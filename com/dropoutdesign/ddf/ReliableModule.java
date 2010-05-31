@@ -117,7 +117,7 @@ public class ReliableModule extends Module {
 			} else {
 				hasError = false;
 			}
-		} catch (ModuleConnectionException e) {
+		} catch (Exception e) {
 			hasError = true;
 			lastError = System.currentTimeMillis();
 		}
