@@ -145,10 +145,11 @@ public class ModuleConnection extends Thread {
 				}
 			
 				respQueue.put(resp);
+			
+			} catch (InterruptedException e) {
+				System.err.println("Thread module " + address + "interrupted, dying.");
+				return;
 			}
-		} catch (InterruptedException e) {
-			System.err.println("Thread module " + address + "interrupted, dying.");
-			return;
 		}
 	}
 	
