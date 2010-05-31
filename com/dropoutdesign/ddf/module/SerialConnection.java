@@ -29,7 +29,7 @@ public class SerialConnection extends ModuleConnection {
 						   SerialPort.DATABITS_8,
 						   SerialPort.STOPBITS_1,
 						   SerialPort.PARITY_NONE);
-			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+			//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 		
 			outputStream = serialPort.getOutputStream();
 			inputStream = serialPort.getInputStream();		

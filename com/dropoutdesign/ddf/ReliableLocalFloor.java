@@ -18,23 +18,12 @@ public class ReliableLocalFloor extends LocalFloor {
 	 */
 	public ReliableLocalFloor(DanceFloorConfig config) {
 		super(config);	// Kludge to placate javac
-		frameRate = config.framerate;
 		
 		modules = new ArrayList<ReliableModule>(config.modules.size());
 		for (ModuleConfig mc : config.modules) {
 			ReliableModule m = new ReliableModule(mc);
-		
-			Rectangle bounds = m.getBounds();
-			int x = bounds.x + bounds.width;
-			if (x > width)
-				width = x;
-			int y = bounds.y + bounds.height;
-			if (y > height)
-				height = y;
-			
 			modules.add(m);
 		}
-		System.out.println("Initialized floor: " + width + "x" + height);
 	}
 	
 	/**
