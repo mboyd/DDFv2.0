@@ -93,13 +93,18 @@ public class ReliableModule extends Module {
 				System.out.println("Module " + address + " reponse: " + response);
 				System.out.println("\ti2c: "
 						+ Integer.toString(mc.checkI2C(), 16));
-				hasError = true;
-				lastError = System.currentTimeMillis();
+				mc.reset();
+			
 			} else {
 				hasError = false;
 			}
+		
 		} catch (Exception e) {
 			disconnect();
+			// We disconnect immediately to avoid a failure mode in which the module
+			// is power cycled faster than we update, which confuses the OS because we
+			// still have a lock on the port the module wants.  This causes the module
+			// to fail to connect until we exit and it's power cycled.
 			hasError = true;
 			lastError = System.currentTimeMillis();
 		}

@@ -24,7 +24,7 @@ public class SerialConnection extends ModuleConnection {
 	
 		try {
 			portID = CommPortIdentifier.getPortIdentifier(port);
-			serialPort = (SerialPort)portID.open("Disco Dance Floor", 2000);
+			serialPort = (SerialPort)portID.open("Disco Dance Floor", timeout);
 			serialPort.setSerialPortParams(SERIAL_BAUD,
 						   SerialPort.DATABITS_8,
 						   SerialPort.STOPBITS_1,
