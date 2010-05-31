@@ -2,43 +2,43 @@
 	<framerate>1</framerate>
 	<modules>
 		<module>
-			<address>serial:/dev/DDF0</address>
+			<address>/dev/DDF0</address>
 			<origin>(0,0)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/DDF1</address>
+			<address>/dev/DDF1</address>
 			<origin>(0,4)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/DDF2</address>
+			<address>/dev/DDF2</address>
 			<origin>(0,8)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/DDF3</address>
+			<address>/dev/DDF3</address>
 			<origin>(0,12)</origin>
 			<size>(16,4)</size>
 		</module>
 		
 		<module>
-			<address>serial:/dev/DDF4</address>
+			<address>/dev/DDF4</address>
 			<origin>(0,16)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/DDF5</address>
+			<address>/dev/DDF5</address>
 			<origin>(0,20)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/DDF6</address>
+			<address>/dev/DDF6</address>
 			<origin>(0,24)</origin>
 			<size>(16,4)</size>
 		</module>
 		<module>
-			<address>serial:/dev/DDF7</address>
+			<address>/dev/DDF7</address>
 			<origin>(0,28)</origin>
 			<size>(16,4)</size>
 		</module>
