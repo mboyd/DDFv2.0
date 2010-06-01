@@ -60,7 +60,9 @@ public class ModuleConnection extends Thread {
 			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
 			outStream = serialPort.getOutputStream();
-			inStream = serialPort.getInputStream();		
+			inStream = serialPort.getInputStream();
+			
+			connected = true;
 
 		} catch (NoSuchPortException e) {
 			throw new ModuleIOException("No serial port at " + address, e);
@@ -91,6 +93,7 @@ public class ModuleConnection extends Thread {
 		} catch (IOException io) {
 			// ignore exception when closing
 		}
+		connected = false;
 	}
 	
 	public boolean isConnected() {
