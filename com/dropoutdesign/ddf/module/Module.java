@@ -66,7 +66,8 @@ public class Module {
 	}
 	
 	public void connect(long timeout) throws ModuleIOException {
-		currentConnection = ModuleConnection.open(address, timeout);
+		currentConnection = new ModuleConnection(address);
+		currentConnection.connect(timeout);
 		
 		System.out.println("Connected to module at " + address);
 		System.out.println("\tfirmware: "
@@ -82,7 +83,7 @@ public class Module {
 	 */
 	public void disconnect() {
 		if (currentConnection != null) {
-			currentConnection.close();
+			currentConnection.disconnect();
 			currentConnection = null;
 		}
 	}

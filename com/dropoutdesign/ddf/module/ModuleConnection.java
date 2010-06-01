@@ -8,8 +8,8 @@ import javax.comm.*;
 public class ModuleConnection extends Thread {
 	
 	private final String address;
-	private final OutputStream outStream;
-	private final InputStream inStream;
+	private OutputStream outStream;
+	private InputStream inStream;
 	
 	public static final int MAX_QUEUE_SIZE = 10;
 	public static final int IO_TIMEOUT = 50;
@@ -20,38 +20,25 @@ public class ModuleConnection extends Thread {
 	private BlockingQueue<byte[]> cmdQueue;
 	private BlockingQueue<byte[]> respQueue;
 	
-	public ModuleConnection(String address, InputStream in, OutputStream out) {
+	public ModuleConnection(String address) {
 		super("ModuleConnection: " + address);
 		this.address = address;
-		inStream = in;
-		outStream = out;
 		
 		cmdQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
 		respQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
 	}
 	
-	/**
-	 * Open a connection given a string such as "/dev/DDF0" that
-	 * specifies the location of a serial-port connected module.
-	 * The connection must be closed using the close()
-	 * method when it is no longer needed.
-	 */
-	public static ModuleConnection open(String address) throws ModuleIOException{
-		return open(address, 2000);
+	public void connect() throws ModuleIOException{
+		connect(2000);
 	}
 	
-	public static ModuleConnection open(String address, long timeout) throws ModuleIOException {
-			
-		CommPortIdentifier portID;
-		OutputStream outputStream;
-		InputStream inputStream;
-		SerialPort serialPort;
-
+	public void connect(long timeout) throws ModuleIOException {
+		
 		try {
-			portID = CommPortIdentifier.getPortIdentifier(address);
+			CommPortIdentifier portID = CommPortIdentifier.getPortIdentifier(address);
 			serialPort = (SerialPort)portID.open("Disco Dance Floor", (int)timeout);
 			
-			System.out.println("");	// Sketchy fix, makes params work
+			System.out.println("");		// Sketchy fix, makes params work
 			serialPort.setSerialPortParams(SERIAL_BAUD,
 						   SerialPort.DATABITS_8,
 						   SerialPort.STOPBITS_1,
@@ -60,8 +47,8 @@ public class ModuleConnection extends Thread {
 			System.out.println("");
 			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
-			outputStream = serialPort.getOutputStream();
-			inputStream = serialPort.getInputStream();		
+			outStream = serialPort.getOutputStream();
+			inStream = serialPort.getInputStream();		
 
 		} catch (NoSuchPortException e) {
 			throw new ModuleIOException("No serial port at " + address, e);
@@ -77,13 +64,10 @@ public class ModuleConnection extends Thread {
 			throw new ModuleIOException("I/O error on serial port " + address, e);
 		}
 
-		ModuleConnection mc = new ModuleConnection(address, inputStream, outputStream);
-		mc.serialPort = serialPort;
-		mc.start();
-		return mc;
+		start();
 	}
 	
-	public void close() {
+	public void disconnect() {
 		try {
 			interrupt();
 			inStream.close();
@@ -92,6 +76,10 @@ public class ModuleConnection extends Thread {
 		} catch (IOException io) {
 			// ignore exception when closing
 		}
+	}
+	
+	public boolean isConnected() {
+		return isAlive();
 	}
 	
 	public void run() {

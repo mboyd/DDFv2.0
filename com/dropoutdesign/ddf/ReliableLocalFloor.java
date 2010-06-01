@@ -1,6 +1,7 @@
 package com.dropoutdesign.ddf;
 
 import com.dropoutdesign.ddf.config.*;
+import com.dropoutdesign.ddf.module.*;
 
 import java.util.*;
 import java.io.*;
