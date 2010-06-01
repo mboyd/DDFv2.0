@@ -114,7 +114,7 @@ public class ModuleConnection extends Thread {
 				if (!connected) {
 					try {
 						System.out.print("Attempting to reconnect " + address + "... ");
-						connect();
+						openConnection(50);
 						System.out.println("success!");
 					} catch (ModuleIOException e) {
 						System.out.println("failed.");
