@@ -93,7 +93,7 @@ public class ModuleConnection extends Thread {
 			inStream.close();
 			outStream.close();
 			serialPort.close();
-		} catch (IOException io) {
+		} catch (Exception io) {
 			// ignore exception when closing
 		}
 		connected = false;
