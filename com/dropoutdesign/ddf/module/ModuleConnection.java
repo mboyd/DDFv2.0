@@ -194,7 +194,7 @@ public class ModuleConnection extends Thread {
 		}
 	}
 
-	public void sendCommand(int cmd) throws ModuleIOException {
+	public void sendCommand(int cmd) {
 		byte[] c = new byte[1];
 		c[0] = (byte)cmd;
 		sendCommand(c);

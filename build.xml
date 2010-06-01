@@ -20,7 +20,7 @@
 	</target>
 	
 	<target name="doc">
-		<javadoc sourcepath="." destdir="doc" classpathref="classpath"/>
+		<javadoc sourcepath="." destdir="doc/javadoc" classpathref="classpath"/>
 	</target>
 
 </project>
