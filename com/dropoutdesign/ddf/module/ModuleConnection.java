@@ -69,8 +69,6 @@ public class ModuleConnection extends Thread {
 			e.printStackTrace();
 			throw new ModuleIOException("I/O error on serial port " + address, e);
 		}
-
-		start();
 	}
 	
 	public void disconnect() {
