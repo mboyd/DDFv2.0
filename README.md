@@ -1,5 +1,5 @@
 ## Server and client for the First East Disco Dance Floor.
-    Under new management!
+Under new management!
 
 ### Overview:
 
@@ -21,5 +21,10 @@ Patterns are stored as raw binary data, corresponding to 16x32 images, but at a 
 
 ### Recent changes:
 
-Modules no longer need to be plugged in in order.
-Existing DDF servers are now auto-killed on startup.
+* Modules no longer need to be plugged in in order.
+* Existing DDF servers are now auto-killed on startup.
+* Glitchy modules should attempt to recover, and can be power-cycled inflight.
+
+### Limitations:
+
+* Modules not connected at startup will never connect.  This is a limitation of the underlying javacomm library and is unlikely to be fixable.
