@@ -68,7 +68,7 @@ public class ModuleConnection extends Thread {
 			throw new ModuleIOException("No serial port at " + address, e);
 		
 		} catch (RuntimeException e) {
-			throw new ModuleIOExcpetion("No serial port at " + address, e);
+			throw new ModuleIOException("No serial port at " + address, e);
 
 		} catch (PortInUseException e) {
 			throw new ModuleIOException("Serial port " + address + " in use.", e);
