@@ -10,7 +10,9 @@ public class ModuleConnection extends Thread {
 	private final String address;
 	private OutputStream outStream;
 	private InputStream inStream;
-	private boolean connected;
+
+	private boolean shouldConnect;	// Official connection status: whether we're accepting commands
+	private boolean connected;		// Actual status of the serial link
 	
 	// These can be adjusted
 	public static final int MAX_QUEUE_SIZE = 10;
@@ -30,8 +32,6 @@ public class ModuleConnection extends Thread {
 		
 		cmdQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
 		respQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
-		
-		start();
 	}
 	
 	public void connect() throws ModuleIOException{
@@ -39,6 +39,11 @@ public class ModuleConnection extends Thread {
 	}
 	
 	public void connect(long timeout) throws ModuleIOException {
+		openConnection(timeout);
+		start();
+	}
+	
+	private void openConnection(long timeout) throws ModuleIOException {
 		
 		try {
 			CommPortIdentifier portID = CommPortIdentifier.getPortIdentifier(address);
@@ -72,6 +77,11 @@ public class ModuleConnection extends Thread {
 	}
 	
 	public void disconnect() {
+		interrupt();
+		closeConnection();
+	}
+	
+	private void closeConnection() {
 		try {
 			inStream.close();
 			outStream.close();
@@ -82,13 +92,13 @@ public class ModuleConnection extends Thread {
 	}
 	
 	public boolean isConnected() {
-		return connected;
+		return shouldConnect;
 	}
 	
 	public void run() {
 		while (true) {
 			try {
-				if (interrupted()) {
+				if (interrupted() || !shouldConnect) {
 					System.err.println("Thread module " + address + " interrupted, dying.");
 					return;
 				}
@@ -111,8 +121,10 @@ public class ModuleConnection extends Thread {
 				try {
 					outStream.write(cmd);
 				} catch (IOException e) {
-					System.err.println("Write error, module " + address);
+					System.err.println("Write error, module " + address + " disconnecting.");
 					e.printStackTrace();
+					closeConnection();
+					continue;
 				}
 			
 				int respLen = getNumBytesExpected(cmd[0]);
@@ -135,14 +147,14 @@ public class ModuleConnection extends Thread {
 					} catch (IOException e) {
 						System.err.println("Read error, module " + address + " disconnecting.");
 						e.printStackTrace();
-						disconnect();
-						continue;
+						closeConnection();
+						break;
 					}
 				
 					if (bytesRead == -1) {
 						System.err.println("Connection terminated, module " + address);
-						disconnect();
-						continue;
+						closeConnection();
+						break;
 					} else {
 						bytesToRead -= bytesRead;
 					}
@@ -150,8 +162,8 @@ public class ModuleConnection extends Thread {
 					long t = System.currentTimeMillis();
 					if ((t - readStart) > IO_TIMEOUT) {
 						System.err.println("Read timeout, module " + address + " disconnecting.");
-						disconnect();
-						continue;
+						closeConnection();
+						break;
 					}
 				
 					sleep(5);
