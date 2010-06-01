@@ -14,7 +14,7 @@ public class ModuleConnection extends Thread {
 	public static final int MAX_QUEUE_SIZE = 10;
 	public static final int IO_TIMEOUT = 50;
 	
-	public static final int SERIAL_BAUD = 57600;
+	public static final int SERIAL_BAUD = 115200;	//57600;
 	private SerialPort serialPort;
 	
 	private BlockingQueue<byte[]> cmdQueue;
@@ -126,9 +126,7 @@ public class ModuleConnection extends Thread {
 						int r = (bytesAvailable > bytesToRead) ? bytesToRead : bytesAvailable;
 					
 						if (r > 0) {
-							System.out.print("Attempting to read " + r + " bytes... ");
 							bytesRead = inStream.read(resp, respLen-bytesToRead, r);
-							System.out.println("done.");
 						}
 						
 					} catch (IOException e) {
