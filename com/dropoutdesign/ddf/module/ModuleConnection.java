@@ -10,6 +10,7 @@ public class ModuleConnection extends Thread {
 	private final String address;
 	private OutputStream outStream;
 	private InputStream inStream;
+	private boolean connected;
 	
 	// These can be adjusted
 	public static final int MAX_QUEUE_SIZE = 10;
@@ -25,9 +26,12 @@ public class ModuleConnection extends Thread {
 	public ModuleConnection(String address) {
 		super("ModuleConnection: " + address);
 		this.address = address;
+		connected = false;
 		
 		cmdQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
 		respQueue = new ArrayBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
+		
+		start();
 	}
 	
 	public void connect() throws ModuleIOException{
@@ -71,7 +75,6 @@ public class ModuleConnection extends Thread {
 	
 	public void disconnect() {
 		try {
-			interrupt();
 			inStream.close();
 			outStream.close();
 			serialPort.close();
@@ -81,7 +84,7 @@ public class ModuleConnection extends Thread {
 	}
 	
 	public boolean isConnected() {
-		return isAlive();
+		return connected;
 	}
 	
 	public void run() {
@@ -90,6 +93,18 @@ public class ModuleConnection extends Thread {
 				if (interrupted()) {
 					System.err.println("Thread module " + address + " interrupted, dying.");
 					return;
+				}
+				
+				if (!connected) {
+					try {
+						System.out.print("Attempting to reconnect " + address + "... ");
+						connect();
+						System.out.println("success!");
+					} catch (ModuleIOException e) {
+						System.out.println("failed.");
+						sleep(500);
+						continue;
+					}
 				}
 			
 				byte[] cmd = null;
@@ -123,11 +138,13 @@ public class ModuleConnection extends Thread {
 						System.err.println("Read error, module " + address + " disconnecting.");
 						e.printStackTrace();
 						disconnect();
+						continue;
 					}
 				
 					if (bytesRead == -1) {
 						System.err.println("Connection terminated, module " + address);
 						disconnect();
+						continue;
 					} else {
 						bytesToRead -= bytesRead;
 					}
@@ -136,6 +153,7 @@ public class ModuleConnection extends Thread {
 					if ((t - readStart) > IO_TIMEOUT) {
 						System.err.println("Read timeout, module " + address + " disconnecting.");
 						disconnect();
+						continue;
 					}
 				
 					sleep(5);
@@ -144,7 +162,7 @@ public class ModuleConnection extends Thread {
 				respQueue.put(resp);
 			
 			} catch (InterruptedException e) {
-				System.err.println("Thread module " + address + "interrupted, dying.");
+				System.err.println("Thread module " + address + " interrupted, dying.");
 				return;
 			}
 		}
