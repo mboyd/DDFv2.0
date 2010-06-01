@@ -13,12 +13,15 @@ public class ReliableModule extends Module {
 	 */
 	public static final int RETRY_INTERVAL_MS = 500;
 	
+	int framesSent;
+	
 	private boolean shouldConnect;
 	private boolean hasError;
 	private long lastError;
 	
 	public ReliableModule(ModuleConfig mc) {
 		super(mc);
+		framesSent = 0;
 		shouldConnect = false;
 		hasError = false;
 	}
@@ -78,6 +81,10 @@ public class ReliableModule extends Module {
 	public void writeFrame(byte[] frame) {
 		ModuleConnection mc = getConnection();
 		
+		if (framesSent > 0) {
+			byte lastResponse = mc.receiveResponseByte();
+		}
+		
 		if (hasError) {
 			long t = System.currentTimeMillis() - lastError;
 			if (t > RETRY_INTERVAL_MS) {	// Diagnose and re-establish
@@ -93,6 +100,7 @@ public class ReliableModule extends Module {
 		
 		try {
 			super.writeFrame(frame);
+			framesSent++;
 			/*byte response = mc.receiveResponseByte();
 			if (response != 0) {
 				System.out.println("Module " + address + " reponse: " + response);

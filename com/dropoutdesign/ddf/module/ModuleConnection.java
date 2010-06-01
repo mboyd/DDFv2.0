@@ -120,22 +120,22 @@ public class ModuleConnection extends Thread {
 						}
 						
 					} catch (IOException e) {
-						System.err.println("Read error, module " + address);
+						System.err.println("Read error, module " + address + " disconnecting.");
 						e.printStackTrace();
-						break;
+						disconnect();
 					}
 				
 					if (bytesRead == -1) {
 						System.err.println("Connection terminated, module " + address);
-						break;
+						disconnect();
 					} else {
 						bytesToRead -= bytesRead;
 					}
 				
 					long t = System.currentTimeMillis();
 					if ((t - readStart) > IO_TIMEOUT) {
-						System.err.println("Read timeout, module " + address);
-						break;
+						System.err.println("Read timeout, module " + address + " disconnecting.");
+						disconnect();
 					}
 				
 					sleep(5);
