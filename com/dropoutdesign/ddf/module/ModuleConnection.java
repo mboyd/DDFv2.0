@@ -11,9 +11,11 @@ public class ModuleConnection extends Thread {
 	private OutputStream outStream;
 	private InputStream inStream;
 	
+	// These can be adjusted
 	public static final int MAX_QUEUE_SIZE = 10;
 	public static final int IO_TIMEOUT = 50;
 	
+	// This is as high as the baud can go before you start getting I2C errors
 	public static final int SERIAL_BAUD = 57600;
 	private SerialPort serialPort;
 	
