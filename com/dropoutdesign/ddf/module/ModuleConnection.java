@@ -39,6 +39,7 @@ public class ModuleConnection extends Thread {
 	}
 	
 	public void connect(long timeout) throws ModuleIOException {
+		shouldConnect = true;
 		openConnection(timeout);
 		start();
 	}
@@ -77,6 +78,7 @@ public class ModuleConnection extends Thread {
 	}
 	
 	public void disconnect() {
+		shouldConnect = false;
 		interrupt();
 		closeConnection();
 	}
