@@ -1,0 +1,289 @@
+   1               		.file	"usart.c"
+   2               		.arch atmega8
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  10               		.text
+  11               	.global	usart_flushRx
+  13               	usart_flushRx:
+  14               	/* prologue: frame size=0 */
+  15               	/* prologue end (size=0) */
+  16 0000 1092 0000 		sts USART_RxHead,__zero_reg__
+  17 0004 1092 0000 		sts USART_RxTail,__zero_reg__
+  18 0008 1092 0000 		sts USART_RxSize,__zero_reg__
+  19               	/* epilogue: frame size=0 */
+  20 000c 0895      		ret
+  21               	/* epilogue end (size=1) */
+  22               	/* function usart_flushRx size 7 (6) */
+  24               	.global	usart_init
+  26               	usart_init:
+  27               	/* prologue: frame size=0 */
+  28               	/* prologue end (size=0) */
+  29 000e 10BC      		out 64-0x20,__zero_reg__
+  30 0010 89B9      		out 41-0x20,r24
+  31 0012 1BB8      		out 43-0x20,__zero_reg__
+  32 0014 86E8      		ldi r24,lo8(-122)
+  33 0016 80BD      		out 64-0x20,r24
+  34 0018 88E9      		ldi r24,lo8(-104)
+  35 001a 8AB9      		out 42-0x20,r24
+  36               	/* #APP */
+  37 001c 7894      		sei
+  38               	/* #NOAPP */
+  39 001e 00D0      		rcall usart_flushRx
+  40               	/* epilogue: frame size=0 */
+  41 0020 0895      		ret
+  42               	/* epilogue end (size=1) */
+  43               	/* function usart_init size 11 (10) */
+  45               	.global	usart_putc
+  47               	usart_putc:
+  48               	/* prologue: frame size=0 */
+  49               	/* prologue end (size=0) */
+  50               	.L7:
+  51 0022 5D9B      		sbis 43-0x20,5
+  52 0024 00C0      		rjmp .L7
+  53 0026 8CB9      		out 44-0x20,r24
+  54               	/* epilogue: frame size=0 */
+  55 0028 0895      		ret
+  56               	/* epilogue end (size=1) */
+  57               	/* function usart_putc size 4 (3) */
+  59               	.global	usart_puts
+  61               	usart_puts:
+  62               	/* prologue: frame size=0 */
+  63 002a EF92      		push r14
+  64 002c FF92      		push r15
+  65 002e 0F93      		push r16
+  66 0030 1F93      		push r17
+  67 0032 CF93      		push r28
+  68 0034 DF93      		push r29
+  69               	/* prologue end (size=6) */
+  70 0036 EC01      		movw r28,r24
+  71 0038 0990      		ld __tmp_reg__,Y+
+  72 003a 0020      		tst __tmp_reg__
+  73 003c 01F4      		brne .-6
+  74 003e 2197      		sbiw r28,1
+  75 0040 C81B      		sub r28,r24
+  76 0042 D90B      		sbc r29,r25
+  77 0044 1C16      		cp __zero_reg__,r28
+  78 0046 1D06      		cpc __zero_reg__,r29
+  79 0048 04F4      		brge .L17
+  80 004a 00E0      		ldi r16,lo8(0)
+  81 004c 10E0      		ldi r17,hi8(0)
+  82 004e 7C01      		movw r14,r24
+  83               	.L16:
+  84 0050 F701      		movw r30,r14
+  85 0052 8191      		ld r24,Z+
+  86 0054 7F01      		movw r14,r30
+  87 0056 00D0      		rcall usart_putc
+  88 0058 0F5F      		subi r16,lo8(-(1))
+  89 005a 1F4F      		sbci r17,hi8(-(1))
+  90 005c C017      		cp r28,r16
+  91 005e D107      		cpc r29,r17
+  92 0060 01F4      		brne .L16
+  93               	.L17:
+  94               	/* epilogue: frame size=0 */
+  95 0062 DF91      		pop r29
+  96 0064 CF91      		pop r28
+  97 0066 1F91      		pop r17
+  98 0068 0F91      		pop r16
+  99 006a FF90      		pop r15
+ 100 006c EF90      		pop r14
+ 101 006e 0895      		ret
+ 102               	/* epilogue end (size=7) */
+ 103               	/* function usart_puts size 35 (22) */
+ 105               	.global	usart_getc
+ 107               	usart_getc:
+ 108               	/* prologue: frame size=0 */
+ 109               	/* prologue end (size=0) */
+ 110               	.L21:
+ 111 0070 9091 0000 		lds r25,USART_RxHead
+ 112 0074 8091 0000 		lds r24,USART_RxTail
+ 113 0078 9817      		cp r25,r24
+ 114 007a 01F0      		breq .L21
+ 115 007c E091 0000 		lds r30,USART_RxTail
+ 116 0080 EF5F      		subi r30,lo8(-(1))
+ 117 0082 EF77      		andi r30,lo8(127)
+ 118 0084 E093 0000 		sts USART_RxTail,r30
+ 119 0088 8091 0000 		lds r24,USART_RxSize
+ 120 008c 8150      		subi r24,lo8(-(-1))
+ 121 008e 8093 0000 		sts USART_RxSize,r24
+ 122 0092 FF27      		clr r31
+ 123 0094 E050      		subi r30,lo8(-(USART_RxBuf))
+ 124 0096 F040      		sbci r31,hi8(-(USART_RxBuf))
+ 125 0098 8081      		ld r24,Z
+ 126 009a 9927      		clr r25
+ 127               	/* epilogue: frame size=0 */
+ 128 009c 0895      		ret
+ 129               	/* epilogue end (size=1) */
+ 130               	/* function usart_getc size 23 (22) */
+ 132               	.global	__vector_11
+ 134               	__vector_11:
+ 135               	/* prologue: frame size=0 */
+ 136 009e 1F92      		push __zero_reg__
+ 137 00a0 0F92      		push __tmp_reg__
+ 138 00a2 0FB6      		in __tmp_reg__,__SREG__
+ 139 00a4 0F92      		push __tmp_reg__
+ 140 00a6 1124      		clr __zero_reg__
+ 141 00a8 0F93      		push r16
+ 142 00aa 1F93      		push r17
+ 143 00ac 2F93      		push r18
+ 144 00ae 3F93      		push r19
+ 145 00b0 4F93      		push r20
+ 146 00b2 5F93      		push r21
+ 147 00b4 6F93      		push r22
+ 148 00b6 7F93      		push r23
+ 149 00b8 8F93      		push r24
+ 150 00ba 9F93      		push r25
+ 151 00bc AF93      		push r26
+ 152 00be BF93      		push r27
+ 153 00c0 EF93      		push r30
+ 154 00c2 FF93      		push r31
+ 155               	/* prologue end (size=19) */
+ 156 00c4 0CB1      		in r16,44-0x20
+ 157 00c6 1091 0000 		lds r17,USART_RxHead
+ 158 00ca 1F5F      		subi r17,lo8(-(1))
+ 159 00cc 1F77      		andi r17,lo8(127)
+ 160 00ce 1093 0000 		sts USART_RxHead,r17
+ 161 00d2 8091 0000 		lds r24,USART_RxTail
+ 162 00d6 1817      		cp r17,r24
+ 163 00d8 01F4      		brne .L27
+ 164 00da 00D0      		rcall usart_flushRx
+ 165               	.L27:
+ 166 00dc 8091 0000 		lds r24,USART_RxSize
+ 167 00e0 8F5F      		subi r24,lo8(-(1))
+ 168 00e2 8093 0000 		sts USART_RxSize,r24
+ 169 00e6 E12F      		mov r30,r17
+ 170 00e8 FF27      		clr r31
+ 171 00ea E050      		subi r30,lo8(-(USART_RxBuf))
+ 172 00ec F040      		sbci r31,hi8(-(USART_RxBuf))
+ 173 00ee 0083      		st Z,r16
+ 174               	/* epilogue: frame size=0 */
+ 175 00f0 FF91      		pop r31
+ 176 00f2 EF91      		pop r30
+ 177 00f4 BF91      		pop r27
+ 178 00f6 AF91      		pop r26
+ 179 00f8 9F91      		pop r25
+ 180 00fa 8F91      		pop r24
+ 181 00fc 7F91      		pop r23
+ 182 00fe 6F91      		pop r22
+ 183 0100 5F91      		pop r21
+ 184 0102 4F91      		pop r20
+ 185 0104 3F91      		pop r19
+ 186 0106 2F91      		pop r18
+ 187 0108 1F91      		pop r17
+ 188 010a 0F91      		pop r16
+ 189 010c 0F90      		pop __tmp_reg__
+ 190 010e 0FBE      		out __SREG__,__tmp_reg__
+ 191 0110 0F90      		pop __tmp_reg__
+ 192 0112 1F90      		pop __zero_reg__
+ 193 0114 1895      		reti
+ 194               	/* epilogue end (size=19) */
+ 195               	/* function __vector_11 size 60 (22) */
+ 197               	.global	data_in_rx_buffer
+ 199               	data_in_rx_buffer:
+ 200               	/* prologue: frame size=0 */
+ 201               	/* prologue end (size=0) */
+ 202 0116 9091 0000 		lds r25,USART_RxHead
+ 203 011a 8091 0000 		lds r24,USART_RxTail
+ 204 011e 20E0      		ldi r18,lo8(0)
+ 205 0120 30E0      		ldi r19,hi8(0)
+ 206 0122 9817      		cp r25,r24
+ 207 0124 01F0      		breq .L31
+ 208 0126 21E0      		ldi r18,lo8(1)
+ 209 0128 30E0      		ldi r19,hi8(1)
+ 210               	.L31:
+ 211 012a C901      		movw r24,r18
+ 212               	/* epilogue: frame size=0 */
+ 213 012c 0895      		ret
+ 214               	/* epilogue end (size=1) */
+ 215               	/* function data_in_rx_buffer size 12 (11) */
+ 217               	.global	usart_wait_for_data
+ 219               	usart_wait_for_data:
+ 220               	/* prologue: frame size=0 */
+ 221 012e CF92      		push r12
+ 222 0130 DF92      		push r13
+ 223 0132 EF92      		push r14
+ 224 0134 FF92      		push r15
+ 225 0136 0F93      		push r16
+ 226 0138 1F93      		push r17
+ 227 013a CF93      		push r28
+ 228 013c DF93      		push r29
+ 229               	/* prologue end (size=8) */
+ 230 013e 7B01      		movw r14,r22
+ 231 0140 C82E      		mov r12,r24
+ 232 0142 DD24      		clr r13
+ 233 0144 8823      		tst r24
+ 234 0146 01F0      		breq .L34
+ 235 0148 00E0      		ldi r16,lo8(0)
+ 236 014a 10E0      		ldi r17,hi8(0)
+ 237               	.L36:
+ 238 014c C0E0      		ldi r28,lo8(0)
+ 239 014e D0E0      		ldi r29,hi8(0)
+ 240               	.L37:
+ 241 0150 00D0      		rcall data_in_rx_buffer
+ 242 0152 8823      		tst r24
+ 243 0154 01F4      		brne .L46
+ 244 0156 2196      		adiw r28,1
+ 245 0158 CF3F      		cpi r28,255
+ 246 015a D105      		cpc r29,__zero_reg__
+ 247 015c 01F4      		brne .L37
+ 248 015e 81E0      		ldi r24,lo8(1)
+ 249 0160 90E0      		ldi r25,hi8(1)
+ 250 0162 00C0      		rjmp .L41
+ 251               	.L46:
+ 252 0164 00D0      		rcall usart_getc
+ 253 0166 F701      		movw r30,r14
+ 254 0168 8193      		st Z+,r24
+ 255 016a 7F01      		movw r14,r30
+ 256 016c 0F5F      		subi r16,lo8(-(1))
+ 257 016e 1F4F      		sbci r17,hi8(-(1))
+ 258 0170 0C15      		cp r16,r12
+ 259 0172 1D05      		cpc r17,r13
+ 260 0174 00F0      		brlo .L36
+ 261               	.L34:
+ 262 0176 80E0      		ldi r24,lo8(0)
+ 263 0178 90E0      		ldi r25,hi8(0)
+ 264               	.L41:
+ 265               	/* epilogue: frame size=0 */
+ 266 017a DF91      		pop r29
+ 267 017c CF91      		pop r28
+ 268 017e 1F91      		pop r17
+ 269 0180 0F91      		pop r16
+ 270 0182 FF90      		pop r15
+ 271 0184 EF90      		pop r14
+ 272 0186 DF90      		pop r13
+ 273 0188 CF90      		pop r12
+ 274 018a 0895      		ret
+ 275               	/* epilogue end (size=9) */
+ 276               	/* function usart_wait_for_data size 47 (30) */
+ 278               		.lcomm USART_RxSize,1
+ 279               		.lcomm USART_RxTail,1
+ 280               		.lcomm USART_RxHead,1
+ 281               		.lcomm USART_RxBuf,128
+ 282               	/* File "usart.c": code  199 = 0x00c7 ( 126), prologues  33, epilogues  40 */
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usart.c
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:3      *ABS*:000000000000003f __SREG__
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:4      *ABS*:000000000000003e __SP_H__
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:5      *ABS*:000000000000003d __SP_L__
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:6      *ABS*:0000000000000000 __tmp_reg__
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:7      *ABS*:0000000000000001 __zero_reg__
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:13     .text:0000000000000000 usart_flushRx
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:279    .bss:0000000000000002 USART_RxHead
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:278    .bss:0000000000000001 USART_RxTail
+                             .bss:0000000000000000 USART_RxSize
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:26     .text:000000000000000e usart_init
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:47     .text:0000000000000022 usart_putc
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:61     .text:000000000000002a usart_puts
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:107    .text:0000000000000070 usart_getc
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:280    .bss:0000000000000003 USART_RxBuf
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:134    .text:000000000000009e __vector_11
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:199    .text:0000000000000116 data_in_rx_buffer
+/var/folders/BU/BUnWgWRyGSGvoJ-+lutg5E+++TI/-Tmp-//ccAZPins.s:219    .text:000000000000012e usart_wait_for_data
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

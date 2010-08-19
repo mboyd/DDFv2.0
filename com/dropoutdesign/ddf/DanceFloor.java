@@ -66,19 +66,20 @@ public abstract class DanceFloor {
 	 */
 	public static DanceFloor connectFloor(String floorAddress) throws Exception {
 		int i = floorAddress.indexOf(":");
+		i = (i == -1 ? floorAddress.length() : i);
 		String type = floorAddress.substring(0, i);
 		String address = floorAddress.substring(i+1, floorAddress.length());
 		
 		DanceFloor f;
-		
-		if (type.equals("virtual")) {
-			f = new VirtualFloor();
 
-		} else if (type.equals("local")) {
+		if (type.equals("local")) {
 			f = new ReliableLocalFloor(address);
 		
 		} else if (type.equals("net")) {
 			f = new RemoteFloor(address);
+		
+		} else if (type.equals("virtual")) {
+				f = new VirtualFloor();
 		
 		} else {
 			throw new IllegalArgumentException("Invalid floor protocol: " + floorAddress);

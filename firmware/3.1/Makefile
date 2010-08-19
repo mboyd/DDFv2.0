@@ -52,7 +52,7 @@ F_CPU = 8000000
 
 
 # Output format. (can be srec, ihex, binary)
-FORMAT = ihex
+FORMAT = binary
 
 
 # Target file name (without extension).

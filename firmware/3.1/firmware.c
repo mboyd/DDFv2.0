@@ -200,7 +200,7 @@ void finalize_comm(unsigned char status, unsigned char *data, unsigned char size
 		for (i=0;i<size;i++)
 			usart_putc(data[i]);
 	wait(2000);
-	PORTD^=0b00001000;
+	PORTD^=0x08;
 }
 
 
@@ -211,7 +211,7 @@ void i2c_set_error(unsigned char address) {
 	unsigned char num;
 	num=i2c_lookup_index(address);
 	if (num<16)
-		i2c_error[num>>3]|=(1<<(num&0b00000111));
+		i2c_error[num>>3]|=(1<<(num&0x07));
 }
 
 //Tag an I2C address as having failed to initialize
@@ -219,8 +219,8 @@ void i2c_set_unusable(unsigned char address) {
 	unsigned char num;
 	num=i2c_lookup_index(address);
 	if (num<16) {
-		i2c_unusable[num>>3]|=(1<<(num&0b00000111));
-		i2c_error[num>>3]|=(1<<(num&0b00000111));
+		i2c_unusable[num>>3]|=(1<<(num&0x07));
+		i2c_error[num>>3]|=(1<<(num&0x07));
 	}
 }
 
@@ -229,8 +229,8 @@ void i2c_set_good(unsigned char address) {
 	unsigned char num;
 	num=i2c_lookup_index(address);
 	if (num<16) {
-		i2c_unusable[num>>3]&=~(1<<(num&0b00000111));
-		i2c_error[num>>3]&=~(1<<(num&0b00000111));
+		i2c_unusable[num>>3]&=~(1<<(num&0x07));
+		i2c_error[num>>3]&=~(1<<(num&0x07));
 	}
 }
 
@@ -238,7 +238,7 @@ void i2c_set_good(unsigned char address) {
 unsigned char i2c_check_unusable(unsigned char address) {
 	unsigned char num;
 	num=i2c_lookup_index(address);
-	if (num==0xFF || (i2c_unusable[num>>3]&(1<<(num&0b00000111))))
+	if (num==0xFF || (i2c_unusable[num>>3]&(1<<(num&0x07))))
 		return 1;
 	return 0;
 }

@@ -48,7 +48,7 @@ public class Main {
 					System.err.println("Valid floor types are:");
 					System.err.println("\tlocal:<configFile>");
 					System.err.println("\tremote:<remoteAddr>");
-					System.err.println("\tvirtual:");
+					System.err.println("\tvirtual");
 				}
 			
 			} else {
@@ -68,7 +68,7 @@ public class Main {
 				System.err.println("Valid floor types are:");
 				System.err.println("\tlocal:<configFile>");
 				System.err.println("\tremote:<remoteAddr>");
-				System.err.println("\tvirtual:");
+				System.err.println("\tvirtual");
 				System.exit(1);
 			}
 		}
