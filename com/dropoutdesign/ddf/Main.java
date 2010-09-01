@@ -62,7 +62,9 @@ public class Main {
 		DanceFloor floor = null;
 		if (serve || render) {
 			try {
+				System.out.println("Trying to connect floor");
 				floor = DanceFloor.connectFloor(floorAddr);
+				System.out.println("Connected");
 			} catch (Exception e) {
 				System.err.println("Unable to initialize floor: " + e);
 				System.err.println("Valid floor types are:");

@@ -243,9 +243,9 @@ public class ClientGUI {
 					String time = JOptionPane.showInputDialog("How long between animation" 
 							+ " switches (seconds)", "180");
 					
-					//RandomPlayThread myRanThread = new RandomPlayThread("RandomPlayThread",
-					// 					Integer.parseInt(time), myPlayer, getFileNames());
-					//myRanThread.start();
+					RandomPlayThread myRanThread = new RandomPlayThread("RandomPlayThread",
+					 					Integer.parseInt(time), myPlayer, getFileNames());
+					myRanThread.start();
 				}
 			}
 		});

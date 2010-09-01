@@ -8,9 +8,9 @@ KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manu
 
 KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N9", NAME:="DDF4"
 
-KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N7", NAME:="DDF5"
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N7", NAME:="DDF1"
 
-KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N4", NAME:="DDF1"
+KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N4", NAME:="DDF5"
 
 KERNEL=="ttyUSB?", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{manufacturer}=="1E", ATTRS{product}=="DDF Module", ATTRS{serial}=="1ET956N2", NAME:="DDF7"
 

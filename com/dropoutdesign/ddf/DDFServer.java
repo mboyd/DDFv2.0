@@ -50,6 +50,7 @@ public class DDFServer extends Thread {
 		int iconnect = 0;
 		while (true) {
 			try {
+				System.out.println("Listening for connection:");
 				clientSocket = serverSocket.accept();
 				iconnect++;
 				System.out.println("Disco!");

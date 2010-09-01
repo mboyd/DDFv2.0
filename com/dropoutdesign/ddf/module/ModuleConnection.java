@@ -47,6 +47,7 @@ public class ModuleConnection extends Thread {
 	private void openConnection(long timeout) throws ModuleIOException {
 		
 		try {
+			System.out.println("Opening serial port");
 			CommPortIdentifier portID = CommPortIdentifier.getPortIdentifier(address);
 			serialPort = (SerialPort)portID.open("Disco Dance Floor", (int)timeout);
 			
@@ -67,8 +68,9 @@ public class ModuleConnection extends Thread {
 			}
 			
 			connected = true;
-			
-			syncPing();
+			System.out.println("Pinging...");
+		//	syncPing();
+			System.out.println("Connected.");
 
 		} catch (NoSuchPortException e) {
 			throw new ModuleIOException("No serial port at " + address, e);
