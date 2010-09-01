@@ -136,14 +136,16 @@ public class LocalFloor extends DanceFloor {
 			Module m = modules.get(i);
 			if (m.isConnected()) {
 				m.writeFrame(frame);
+				}
+		}
+		
+		for (int i = 0; i < modules.size(); i++) {
+			Module m = modules.get(i);
+			if (m.isConnected()) {
 				byte response = m.getConnection().receiveResponseByte();
 				if (response != 0) {
 					System.out.println("Module " + i + " reponse: " + response);
-					System.out.println("\ti2c: "
-							+ Integer.toString(m.getConnection().checkI2C(), 16));
 				}
-			} else {
-				System.out.println("Module " + i + " not connected.");
 			}
 		}
 	}
