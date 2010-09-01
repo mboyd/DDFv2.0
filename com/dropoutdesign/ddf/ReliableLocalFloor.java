@@ -8,7 +8,9 @@ import java.io.*;
 import java.awt.Rectangle;
 
 /**
- * Subclass of LocalFloor that uses ReliableModules to provide automatic error handling.
+ * DEPRECATED: Subclass of LocalFloor that uses ReliableModules to provide automatic error handling.
+ * As ReliableModule functions have been relocated to the base ModuleConnection, this class is no longer
+ * necessary, and may cause anomalous behavior.  Use LocalFloor instead.
  */
 public class ReliableLocalFloor extends LocalFloor {
 	

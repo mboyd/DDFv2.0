@@ -4,7 +4,9 @@ import com.dropoutdesign.ddf.module.*;
 import com.dropoutdesign.ddf.config.*;
 
 /**
- * Subclass of Module that provides automatic recovery from errors.
+ * DEPRECATED: Subclass of Module that provides automatic recovery from errors.
+ * The functionality of this classes has been moved to ModuleConnection, and thus
+ * this class is no longer necesssary, and may cause problems if used.
  */
 public class ReliableModule extends Module {
 	
