@@ -62,6 +62,10 @@ public class ModuleConnection extends Thread {
 			outStream = serialPort.getOutputStream();
 			inStream = serialPort.getInputStream();
 			
+			if (outStream == null || inStream == null) {
+				throw new IOException("Null stream");
+			}
+			
 			connected = true;
 			
 			syncPing();
