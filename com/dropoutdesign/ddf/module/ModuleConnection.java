@@ -130,7 +130,7 @@ public class ModuleConnection extends Thread {
 				}
 			
 				byte[] cmd = null;
-				while (cmdQueue.size() > 0) {	// Drop frames if we've accumulated a queue
+				while (cmdQueue.size() > 0 || cmd == null) {	// Drop frames if we've accumulated a queue
 					cmd = cmdQueue.take();
 				}
 			
