@@ -136,7 +136,7 @@ public class LocalFloor extends DanceFloor {
 			Module m = modules.get(i);
 			if (m.isConnected()) {
 				m.writeFrame(frame);
-				}
+			}
 		}
 		
 		for (int i = 0; i < modules.size(); i++) {
