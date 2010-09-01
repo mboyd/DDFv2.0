@@ -72,6 +72,7 @@ public class LocalFloor extends DanceFloor {
 				numConnectedModules++;
 			} catch (Exception e) {
 				System.out.println("Failed to connect module: " + e);
+				m.disconnect();
 			}
 		}
 		if (numConnectedModules == 0) {

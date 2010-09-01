@@ -45,7 +45,7 @@ public class Module {
 	 * Return the connection status of this module.
 	 */
 	public boolean isConnected() {
-		return (currentConnection != null);
+		return (currentConnection != null && currentConnection.isConnected());
 	}
 	
 	/**

@@ -79,7 +79,7 @@ public abstract class DanceFloor {
 			f = new RemoteFloor(address);
 		
 		} else if (type.equals("virtual")) {
-				f = new VirtualFloor();
+			f = new VirtualFloor();
 		
 		} else {
 			throw new IllegalArgumentException("Invalid floor protocol: " + floorAddress);
