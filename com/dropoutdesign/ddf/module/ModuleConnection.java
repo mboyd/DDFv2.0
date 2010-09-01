@@ -63,6 +63,8 @@ public class ModuleConnection extends Thread {
 			inStream = serialPort.getInputStream();
 			
 			connected = true;
+			
+			syncPing();
 
 		} catch (NoSuchPortException e) {
 			throw new ModuleIOException("No serial port at " + address, e);
@@ -124,7 +126,9 @@ public class ModuleConnection extends Thread {
 				}
 			
 				byte[] cmd = null;
-				cmd = cmdQueue.take();
+				while (cmdQueue.size() > 0) {	// Drop frames if we've accumulated a queue
+					cmd = cmdQueue.take();
+				}
 			
 				try {
 					outStream.write(cmd);
@@ -212,28 +216,33 @@ public class ModuleConnection extends Thread {
 		byte[] resp = receiveResponse();
 		return resp[0];
 	}
+	
+	public byte syncPing() throws IOException {
+		outStream.write((byte)0x50);
+		return (byte)inStream.read();
+	}
 
-	public byte ping() throws ModuleIOException {
+	public byte ping() {
 		sendCommand(0x50);
 		return receiveResponseByte();
 	}
 
-	public byte blackout() throws ModuleIOException {
+	public byte blackout() {
 		sendCommand(0x40);
 		return receiveResponseByte();
 	}
 
-	public byte reset() throws ModuleIOException {
+	public byte reset() {
 		sendCommand(0x60);
 		return receiveResponseByte();
 	}
 
-	public byte selfTest() throws ModuleIOException {
+	public byte selfTest() {
 		sendCommand(0x80);
 		return receiveResponseByte();
 	}
 
-	public byte firmwareVersion() throws ModuleIOException {
+	public byte firmwareVersion() {
 		sendCommand(0x70);
 		byte[] resp = receiveResponse();
 		if (resp[0] != 0) { // for old firmware
@@ -244,7 +253,7 @@ public class ModuleConnection extends Thread {
 		}
 	}
 
-	public int checkI2C() throws ModuleIOException {
+	public int checkI2C() {
 		sendCommand(0x61);
 		byte[] resp = receiveResponse();
 		if (resp[0] != 0) { // for old firmware
