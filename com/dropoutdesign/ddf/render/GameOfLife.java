@@ -11,6 +11,8 @@ public class GameOfLife implements Renderer {
 	
 	private Random random;
 	
+	private int frameN;
+	
 	public static int WIDTH = 16;
 	public static int HEIGHT = 32;
 	
@@ -21,6 +23,10 @@ public class GameOfLife implements Renderer {
 		grid = new int[HEIGHT][WIDTH];
 		nextGrid = new int[HEIGHT][WIDTH];
 		
+		frameN = 0;
+	}
+	
+	public void reset() {
 		random = new Random(System.currentTimeMillis());
 		
 		for (int i = 0; i < grid.length; i++) {
@@ -36,6 +42,8 @@ public class GameOfLife implements Renderer {
 			
 			grid[i][j] = 1;
 		}
+		
+		frameN = 0;
 	}
 	
 	public void step() {
@@ -59,10 +67,14 @@ public class GameOfLife implements Renderer {
 				}
 			}
 		}
-		
+	
 		int[][] tmp = nextGrid;		// Swap buffers
 		nextGrid = grid;
 		grid = tmp;
+		
+		if (frameN++ > 75) {
+			reset();
+		}
 	}
 	
 	public int countNeighbors(int i, int j) {
